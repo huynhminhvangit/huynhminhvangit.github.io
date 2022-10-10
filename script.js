@@ -484,9 +484,20 @@ window.addEventListener('load', function () {
       this.speed = 1;
       // debug mode
       this.debug = false;
+      // sound
+      this.isMusic = true;
+      this.sound = new Audio();
+      this.sound.src = 'assets/audios/background.mp3';
+      this.sound.loop = true;
+      
     }
 
     update (deltaTime) {
+      if(this.isMusic) {
+        this.sound.play();
+      } else {
+        this.sound.pause();
+      }
       if (!this.gameOver) this.gameTime += deltaTime;
       if (this.gameTime > this.timeLimit) this.gameOver = true;
       this.background.update();
