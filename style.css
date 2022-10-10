@@ -1,0 +1,49 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#mainPlay {
+  border: 5px solid black;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #4d79bc;
+  max-width: 100%;
+  max-height: 100%;
+  font-family: 'Bangers', cursive;
+}
+
+#layer1, #layer2, #layer3, #layer4 {
+  display: none;
+}
+
+#player {
+  display: none;
+}
+
+#angler1, #angler2, #lucky{
+  display: none;
+}
+
+#projectile {
+  display: none;
+}
+
+#gears {
+  display: none;
+}
+
+#hivewhale {
+  display: none;
+}
+
+#drone {
+  display: none;
+}
+
+#smokeExplosion, #fireExplosion {
+  display: none;
+}
