@@ -157,13 +157,15 @@ window.addEventListener('load', function () {
     }
 
     draw (context) {
-      // context.fillStyle = 'black';
-      if (this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
-      // handle projectiles
-      this.projectiles.forEach(projectile => {
-        projectile.draw(context);
-      });
-      context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
+      if(!this.game.gameOver) {
+        // context.fillStyle = 'black';
+        if (this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
+        // handle projectiles
+        this.projectiles.forEach(projectile => {
+          projectile.draw(context);
+        });
+        context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
+      }
     }
 
     shootTop () {
@@ -204,7 +206,11 @@ window.addEventListener('load', function () {
     }
 
     update () {
-      this.x += this.speedX - this.game.speed;
+      if(this.game.gameOver) {
+        this.markedForDeletion = true;
+      } else {
+        this.x += this.speedX - this.game.speed;
+      }
       if (this.x + this.width < 0) this.markedForDeletion = true;
       // sprite animation
       if (this.frameX < this.maxFrame) {
@@ -477,9 +483,9 @@ window.addEventListener('load', function () {
       this.ammoInterval = 350;
       this.gameOver = false;
       this.score = 0;
-      this.winningScore = 200;
+      this.winningScore = 999999;
       this.gameTime = 0;
-      this.timeLimit = 60000;
+      this.timeLimit = 60000000000;
       // speed layer and background
       this.speed = 1;
       // debug mode
@@ -528,8 +534,10 @@ window.addEventListener('load', function () {
           for (let i = 0; i < enemy.score; i++) {
             this.particles.push(new Particle(this, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5));
           }
-          if (enemy.type === 'lucky') this.player.enterPowerUp();
-          else if(!this.gameOver) this.score--;
+          
+          // Game Over
+          this.addExplosion(this.player);
+          this.gameOver = true;
         }
         this.player.projectiles.forEach(projectile => {
           if (this.checkCollision(projectile, enemy)) {
@@ -542,6 +550,7 @@ window.addEventListener('load', function () {
               }
               enemy.markedForDeletion = true;
               this.addExplosion(enemy);
+              if (enemy.type === 'lucky') this.player.enterPowerUp();
               if (enemy.type === 'hive') {
                 for (let i = 0; i < 5; i++) {
                   this.enemies.push(new Drone(game, enemy.x + Math.random() * this.width, enemy.y + Math.random() * this.height * 0.5));
