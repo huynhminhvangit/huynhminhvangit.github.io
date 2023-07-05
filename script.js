@@ -1,4 +1,7 @@
-var audio = new Audio();
+var audio = document.getElementById("audio");
 audio.src = '/mp3/Cho-Trong-Ai.mp3';
 audio.loop = true;
-audio.play();
+
+window.addEventListener("load", function() {
+    audio.play();
+})
