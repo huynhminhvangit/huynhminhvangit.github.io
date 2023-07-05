@@ -72,6 +72,9 @@
 .button:nth-of-type(6) span::before {
     content: 'A';
 }
+.button:nth-of-type(7) span::before {
+    content: 'E';
+}
 
 .button::after {
     content: '';
