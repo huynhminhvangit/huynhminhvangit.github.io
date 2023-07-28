@@ -54,28 +54,24 @@
 }
 
 .button:nth-of-type(2) span::before {
-    content: 'P';
+    content: 'A';
 }
 
 .button:nth-of-type(3) span::before {
-    content: 'A';
-}
-
-.button:nth-of-type(4) span::before {
     content: 'C';
 }
 
-.button:nth-of-type(5) span::before {
+.button:nth-of-type(4) span::before {
     content: 'G';
 }
 
-.button:nth-of-type(6) span::before {
+.button:nth-of-type(5) span::before {
     content: 'A';
 }
-.button:nth-of-type(7) span::before {
+.button:nth-of-type(6) span::before {
     content: 'E';
 }
-.button:nth-of-type(8) span::before {
+.button:nth-of-type(7) span::before {
     content: 'T';
 }
 
