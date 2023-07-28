@@ -12,6 +12,39 @@ window.addEventListener('load', function () {
     let point = 5;
     let roundIndex = 0;
 
+    class UI {
+        constructor(game) {
+            this.game = game;
+            this.fontSize = 25;
+            this.fontFamily = 'Bangers';
+            this.color = 'white';
+        }
+
+        draw(context) {
+            context.save();
+
+            context.fillStyle = this.color;
+            context.shadowOffsetX = 2;
+            context.shadowOffsetY = 2;
+            context.shadowColor = 'black';
+            context.font = this.fontSize + 'px ' + this.fontFamily;
+            // title
+            context.fillText('Designed by Vang Huynh', this.game.width / 2 - 140, 20);
+
+            // game over messages
+            if (this.game.isGameOver) {
+                context.textAlign = 'center';
+                let message1 = 'Mắt lé rồi, chơi lại đi';
+                let message2 = "Chơi lại sau " + (5 - Math.floor(this.game.gameOverTimer / 1000)) + " giây";
+                context.font = '70px ' + this.fontFamily;
+                context.fillText(message1, this.game.width * 0.5, this.game.height * 0.5 + 280);
+                context.font = '25px ' + this.fontFamily;
+                context.fillText(message2, this.game.width * 0.5, this.game.height * 0.5 + 320);
+            }
+            context.restore();
+        }
+    }
+
     class Angle {
         constructor(x, y, size, angleStartPart, angleEndPart, color) {
             this.x = x;
@@ -20,6 +53,7 @@ window.addEventListener('load', function () {
             this.angleStartPart = angleStartPart;
             this.angleEndPart = angleEndPart;
             this.color = color;
+            this.isHidden = false;
         }
 
         draw(context) {
@@ -27,8 +61,6 @@ window.addEventListener('load', function () {
             context.moveTo(this.x, this.y);
 
             context.arc(this.x, this.y, this.size, this.angleStartPart, this.angleEndPart, false);
-            const x1 = this.x + this.size * Math.cos(this.angleStartPart);
-            const y1 = this.y + this.size * Math.sin(this.angleStartPart);
             const x2 = this.x + this.size * Math.cos(this.angleEndPart);
             const y2 = this.y + this.size * Math.sin(this.angleEndPart);
 
@@ -43,7 +75,11 @@ window.addEventListener('load', function () {
         }
 
         update(deltaTime) {
-
+            if (this.isHidden) {
+                this.color = 'black';
+            } else {
+                this.color = 'gray';
+            }
         }
 
         isClicked(x, y) {
@@ -78,39 +114,36 @@ window.addEventListener('load', function () {
             this.height = height;
             this.ball = new Circle(width / 2 - 222, height / 2, 100, 'black');
             this.ball2 = new Circle(width / 2 + 222, height / 2, sizeCheck - 20, 'black');
+            this.ui = new UI(this);
             this.isShowPass = false;
             this.isShowFail = false;
+            this.isGameOver = false;
+            this.isNextRound = false;
+            this.gameTimer = 0;
+            this.gameOverTimer = 0;
             this.pass = document.getElementById('pass');
             this.fail = document.getElementById('fail');
             this.random = Math.floor(Math.random() * 7);
-            this.isStartGame = true;
         }
 
         update(deltaTime) {
-            angles.forEach(item => item.update(deltaTime))
-            if (this.isStartGame) {
-                angles = [];
-                angles2 = [];
-                for (let i = 0; i < 8; i++) {
-                    const anglePerPart = (2 * Math.PI) / 8;
-                    var angleItem = new Angle(this.width / 2 - 222, this.height / 2, 160, i * anglePerPart, (i + 1) * anglePerPart, 'gray')
-                    var angleItem2 = new Angle(this.width / 2 + 222, this.height / 2, sizeAngleCheck - roundIndex - point, i * anglePerPart, (i + 1) * anglePerPart, 'gray')
-                    angles.push(angleItem);
-                    angles2.push(angleItem2)
+            angles.forEach(item => item.update(deltaTime));
+            angles2.forEach(item => item.update(deltaTime));
+            if (!this.isGameOver) this.gameTimer += deltaTime;
+            else {
+                this.gameOverTimer += deltaTime;
+                if (this.gameOverTimer > 5000) {
+                    this.newGame();
                 }
-                this.ball2 = new Circle(this.width / 2 + 222, this.height / 2, sizeCheck - point, 'black');;
-                angles2[this.random].color = 'black';
-                this.isStartGame = false;
+            }
 
+            if (this.gameTimer > 2000 && this.isNextRound) {
+                this.nextRound();
             }
         }
 
-        nextRound() {
-            this.random = Math.floor(Math.random() * 7);
-        }
-
         draw(context) {
-            context.clearRect(0, 0, this.width, this.height);
+            this.ui.draw(context);
 
             angles.forEach(item => item.draw(context));
             this.ball.draw(context);
@@ -126,11 +159,51 @@ window.addEventListener('load', function () {
             }
 
         }
+
+        nextRound() {
+            this.isShowFail = false;
+            this.isShowPass = false;
+            this.isNextRound = false;
+            angles2 = [];
+            angles[this.random].isHidden = false;
+            for (let i = 0; i < 8; i++) {
+                const anglePerPart = (2 * Math.PI) / 8;
+                var angleItem2 = new Angle(this.width / 2 + 222, this.height / 2, sizeAngleCheck - roundIndex - point, i * anglePerPart, (i + 1) * anglePerPart, 'gray')
+                angles2.push(angleItem2)
+            }
+            let size = (sizeCheck - point) < 1 ? 1 : sizeCheck - point;
+            this.ball2 = new Circle(this.width / 2 + 222, this.height / 2, size, 'black');
+            this.gameTimer = 0;
+            this.random = Math.floor(Math.random() * 7);
+            angles2[this.random].isHidden = true;
+        }
+
+        newGame() {
+            this.isShowFail = false;
+            this.isShowPass = false;
+            this.isGameOver = false;
+            this.gameTimer = 0;
+            this.gameOverTimer = 0;
+            angles = [];
+            angles2 = [];
+            for (let i = 0; i < 8; i++) {
+                const anglePerPart = (2 * Math.PI) / 8;
+                var angleItem = new Angle(this.width / 2 - 222, this.height / 2, 160, i * anglePerPart, (i + 1) * anglePerPart, 'gray')
+                var angleItem2 = new Angle(this.width / 2 + 222, this.height / 2, sizeAngleCheck - roundIndex - point, i * anglePerPart, (i + 1) * anglePerPart, 'gray')
+                angles.push(angleItem);
+                angles2.push(angleItem2)
+            }
+            this.random = Math.floor(Math.random() * 7);
+            this.ball2 = new Circle(this.width / 2 + 222, this.height / 2, sizeCheck - point, 'black');;
+            angles2[this.random].isHidden = true;
+        }
+
     }
 
     canvas.addEventListener("click", handleClick);
 
     const game = new Game(canvas.width, canvas.height);
+    game.newGame();
     let lastTime = 0;
     // animation loop
     function animate(timeStamp) {
@@ -143,6 +216,12 @@ window.addEventListener('load', function () {
     }
     animate(0);
 
+    window.addEventListener("resize", function () {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        game.newGame();
+    })
+
     // Function to handle the click event
     function handleClick(event) {
         const rect = canvas.getBoundingClientRect();
@@ -150,22 +229,24 @@ window.addEventListener('load', function () {
         const mouseY = event.clientY - rect.top;
         for (let i = 0; i < angles.length; i++) {
             if (angles[i].isClicked(mouseX, mouseY)) {
+                angles[game.random].isHidden = true;
                 if (game.random === i) {
-                    angles2[game.random].color = 'gray';
                     point++;
                     if (roundIndex % 3 === 0) {
                         roundIndex++;
                     }
-                    game.nextRound();
-                    game.isStartGame = true;
+                    game.gameTimer = 0;
+                    game.isNextRound = true;
                     game.isShowPass = true;
                     game.isShowFail = false;
                 } else {
                     game.isShowPass = false;
                     game.isShowFail = true;
+                    game.isGameOver = true;
                 }
                 break;
             }
         }
     }
 });
+
