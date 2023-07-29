@@ -54,6 +54,9 @@ window.addEventListener('load', function () {
             this.angleEndPart = angleEndPart;
             this.color = color;
             this.isHidden = false;
+            this.sound = new Audio();
+            this.sound.src = 'assets/audios/pass.mp3';
+            this.sound.loop = false;
         }
 
         draw(context) {
@@ -80,6 +83,11 @@ window.addEventListener('load', function () {
             } else {
                 this.color = 'gray';
             }
+        }
+
+        playSound(src) {
+            this.sound.src = src;
+            this.sound.play();
         }
 
         isClicked(x, y) {
@@ -231,6 +239,7 @@ window.addEventListener('load', function () {
             if (angles[i].isClicked(mouseX, mouseY)) {
                 angles[game.random].isHidden = true;
                 if (game.random === i) {
+                    angles[game.random].playSound('assets/audios/pass.mp3');
                     point++;
                     if (roundIndex % 3 === 0) {
                         roundIndex++;
@@ -240,6 +249,7 @@ window.addEventListener('load', function () {
                     game.isShowPass = true;
                     game.isShowFail = false;
                 } else {
+                    angles[game.random].playSound('assets/audios/gameOver.wav');
                     game.isShowPass = false;
                     game.isShowFail = true;
                     game.isGameOver = true;
