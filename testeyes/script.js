@@ -187,6 +187,9 @@ window.addEventListener('load', function () {
         }
 
         newGame() {
+            point = 5;
+            sizeAngleCheck = 25;
+            sizeCheck = 20;
             this.isShowFail = false;
             this.isShowPass = false;
             this.isGameOver = false;
