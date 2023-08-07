@@ -101,3 +101,9 @@ window.addEventListener('mousedown', function (e) {
 window.addEventListener('mouseup', function (e) {
     isDrawing = false;
 });
+
+window.addEventListener('keydown', e => {
+    if (e.key === 'r') {
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    }
+});
