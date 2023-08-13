@@ -1,49 +1,89 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-#mainPlay {
-  border: 5px solid black;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #4d79bc;
-  max-width: 100%;
-  max-height: 100%;
-  font-family: 'Bangers', cursive;
+.main {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
-#layer1, #layer2, #layer3, #layer4 {
-  display: none;
+.button {
+    margin: 30px;
+    width: 160px;
+    height: 60px;
+    border: 1px solid black;
+    position: relative;
 }
 
-#player {
-  display: none;
+.button a {
+    color: black;
+    text-decoration: none;
 }
 
-#angler1, #angler2, #lucky{
-  display: none;
+.button p {
+    line-height: 60px;
+    text-align: center;
+    font-size: 25px;
+    font-weight: 900;
+    position: relative;
+    transition: 0.8s;
+    z-index: 10;
 }
 
-#projectile {
-  display: none;
+.button span {
+    color: transparent;
+    position: relative;
+
 }
 
-#gears {
-  display: none;
+.button span::before {
+    content: '';
+    position: absolute;
+    width: auto;
+    height: 60px;
+    color: black;
+    transition: 0.2s ease-out;
 }
 
-#hivewhale {
-  display: none;
+.button:nth-of-type(1) span::before {
+    content: 'H';
 }
 
-#drone {
-  display: none;
+.button:nth-of-type(2) span::before {
+    content: 'S';
 }
 
-#smokeExplosion, #fireExplosion {
-  display: none;
+.button:nth-of-type(3) span::before {
+    content: 'S';
+}
+
+.button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    transition: 0.8s;
+    z-index: 1;
+}
+
+.button:hover::after {
+    background-color: rgba(0, 0, 0, 1);
+    transform: rotate(10deg);
+}
+
+.button:hover p {
+    color: white;
+}
+
+.button:hover span::before {
+    color: white;
+    transform: translate(-65%, -10%) rotate(360deg);
+    font-size: 80px;
 }
