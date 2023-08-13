@@ -4,4 +4,11 @@
     left: 50%;
     top: 50%;
     translate: -50% -50%;
+    background: url('assets/images/background.png');
+}
+
+#beetlemorph,
+#player,
+#player_jets {
+    display: none;
 }
