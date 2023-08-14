@@ -200,7 +200,7 @@ class Beetlemorph extends Enemy {
         this.lives = 1;
         this.maxLives = this.lives;
         this.sound = new Audio();
-        this.sound.src = 'assets/audios/fireExplosion.wav';
+        this.sound.src = 'assets/audios/smokeExplosion.wav';
     }
 }
 
