@@ -31,9 +31,9 @@ class Player {
         } else {
             this.frameX = 0;
         }
-        if (this.game.keys.indexOf('ArrowLeft') > -1) {
+        if (this.game.keys.indexOf('ArrowLeft') > -1 || this.game.keys.indexOf('LeftPressed') > -1) {
             this.frameJetsX = 0;
-        } else if (this.game.keys.indexOf('ArrowRight') > -1) {
+        } else if (this.game.keys.indexOf('ArrowRight') > -1 || this.game.keys.indexOf('RightPressed') > -1) {
             this.frameJetsX = 2;
         } else {
             this.frameJetsX = 1;
@@ -44,23 +44,11 @@ class Player {
 
     update() {
         // Horizontal Movement
-        if (this.game.keys.indexOf('ArrowLeft') > -1) {
+        if (this.game.keys.indexOf('ArrowLeft') > -1 || this.game.keys.indexOf('LeftPressed') > -1) {
             this.x -= this.speed;
         }
-        if (this.game.keys.indexOf('ArrowRight') > -1) {
+        if (this.game.keys.indexOf('ArrowRight') > -1 || this.game.keys.indexOf('RightPressed') > -1) {
             this.x += this.speed;
-        }
-        if (this.game.keys.indexOf('LeftPressed') > -1) {
-            this.x -= this.speed;
-            if (this.game.keys.indexOf('LeftPressed') > -1) {
-                this.game.keys.splice(this.game.keys.indexOf('LeftPressed'), 1);
-            }
-        }
-        if (this.game.keys.indexOf('RightPressed') > -1) {
-            this.x += this.speed;
-            if (this.game.keys.indexOf('RightPressed') > -1) {
-                this.game.keys.splice(this.game.keys.indexOf('RightPressed'), 1);
-            }
         }
         // Horizontal Boundaries
         if (this.x < -this.width * 0.5) {
@@ -76,7 +64,6 @@ class Player {
             projectile.playSound();
             projectile.start(this.x + this.width * 0.5, this.y);
         }
-        this.game.fired = false;
     }
 
     restart() {
@@ -97,9 +84,6 @@ class InputHandler {
                 this.game.player.shoot();
             }
             this.game.fired = true;
-            if (this.game.keys.indexOf(e.key) === -1) {
-                this.game.keys.push(e.key);
-            }
             if (e.key === 'd') {
                 this.game.debug = !this.game.debug;
             }
@@ -119,35 +103,103 @@ class InputHandler {
 class GamepadHandler {
     constructor(game) {
         this.game = game;
-        // this.leftPressed = false;
-        // this.rightPressed = false;
-        // this.xPressed = false;
-        // this.upPressed = false;
-        // this.downPressed = false;
-
+        this.leftPressed = false;
+        this.rightPressed = false;
+        this.greenPressed = false;
+        this.bluePressed = false;
+        this.redPressed = false;
+        this.yellowPressed = false;
+        this.startPressed = false;
     }
 
     update() {
         if (controllerIndex !== null) {
             const gamepad = navigator.getGamepads()[controllerIndex];
             const buttons = gamepad.buttons;
-            // for (let index = 0; index < buttons.length; index++) {
-            //     const element = buttons[index];
-            //     if (element.pressed) {
-            //         console.log(index);
-            //     }
-            // }
-            if (buttons[14].pressed && this.game.keys.indexOf('LeftPressed') === -1 && !this.game.gameOver) {
+            for (let index = 0; index < buttons.length; index++) {
+                const button = buttons[index];
+                // if (button.pressed) {
+                //     console.log(index);
+                // }
+                switch (index) {
+                    case 0:
+                        this.greenPressed = button.pressed;
+                        break;
+                    case 1:
+                        this.redPressed = button.pressed;
+                        break;
+                    case 2:
+                        this.bluePressed = button.pressed;
+                        break;
+                    case 3:
+                        this.yellowPressed = button.pressed;
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
+                    case 6:
+                        break;
+                    case 7:
+                        break;
+                    case 8:
+                        break;
+                    case 9:
+                        this.startPressed = button.pressed;
+                        break;
+                    case 10:
+                        break;
+                    case 11:
+                        break;
+                    case 12:
+                        break;
+                    case 13:
+                        break;
+                    case 14:
+                        this.leftPressed = button.pressed;
+                        break;
+                    case 15:
+                        this.rightPressed = button.pressed;
+                        break;
+                    case 16:
+                        break;
+                    case 17:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            const stickDeadZone = 0.4;
+            const leftRightAxesOneValue = gamepad.axes[0];
+            const leftRightAxesTwoValue = gamepad.axes[2];
+            if (leftRightAxesOneValue >= stickDeadZone) {
+                this.rightPressed = true;
+            } else if (leftRightAxesOneValue <= -stickDeadZone) {
+                this.leftPressed = true;
+            }
+            if (leftRightAxesTwoValue >= stickDeadZone) {
+                this.rightPressed = true;
+            } else if (leftRightAxesTwoValue <= -stickDeadZone) {
+                this.leftPressed = true;
+            }
+
+            if (this.leftPressed && this.game.keys.indexOf('LeftPressed') === -1 && !this.game.gameOver) {
                 this.game.keys.push('LeftPressed');
+            } else if (!this.leftPressed && this.game.keys.indexOf('LeftPressed') > -1 && !this.game.gameOver) {
+                this.game.keys.splice(this.game.keys.indexOf('LeftPressed'), 1);
             }
-            if (buttons[15].pressed && this.game.keys.indexOf('RightPressed') === -1 && !this.game.gameOver) {
+            if (this.rightPressed && this.game.keys.indexOf('RightPressed') === -1 && !this.game.gameOver) {
                 this.game.keys.push('RightPressed');
+            } else if (!this.rightPressed && this.game.keys.indexOf('RightPressed') > -1 && !this.game.gameOver) {
+                this.game.keys.splice(this.game.keys.indexOf('RightPressed'), 1);
             }
-            if (buttons[0].pressed && !this.game.gameOver && !this.game.fired) {
+            if (this.greenPressed && !this.game.gameOver && !this.game.fired) {
                 this.game.fired = true;
                 this.game.player.shoot();
+            } else if (!this.greenPressed && !this.game.gameOver && this.game.fired) {
+                this.game.fired = false;
             }
-            if (buttons[9].pressed && this.game.gameOver) {
+            if (this.startPressed && this.game.gameOver) {
                 this.game.restart();
             }
         }
