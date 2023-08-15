@@ -1,4 +1,11 @@
-/** @type {HTMLCanvasElement} */
+let controllerIndex = null;
+window.addEventListener('gamepadconnected', function (e) {
+    controllerIndex = e.gamepad.index;
+});
+
+window.addEventListener('gamepaddisconnected', function (e) {
+    controllerIndex = null;
+});
 
 class Player {
     constructor(game) {
@@ -43,6 +50,18 @@ class Player {
         if (this.game.keys.indexOf('ArrowRight') > -1) {
             this.x += this.speed;
         }
+        if (this.game.keys.indexOf('LeftPressed') > -1) {
+            this.x -= this.speed;
+            if (this.game.keys.indexOf('LeftPressed') > -1) {
+                this.game.keys.splice(this.game.keys.indexOf('LeftPressed'), 1);
+            }
+        }
+        if (this.game.keys.indexOf('RightPressed') > -1) {
+            this.x += this.speed;
+            if (this.game.keys.indexOf('RightPressed') > -1) {
+                this.game.keys.splice(this.game.keys.indexOf('RightPressed'), 1);
+            }
+        }
         // Horizontal Boundaries
         if (this.x < -this.width * 0.5) {
             this.x = -this.width * 0.5;
@@ -57,6 +76,7 @@ class Player {
             projectile.playSound();
             projectile.start(this.x + this.width * 0.5, this.y);
         }
+        this.game.fired = false;
     }
 
     restart() {
@@ -65,7 +85,6 @@ class Player {
         this.lives = 3;
     }
 }
-
 
 class InputHandler {
     constructor(game) {
@@ -94,6 +113,44 @@ class InputHandler {
                 this.game.keys.splice(this.game.keys.indexOf(e.key), 1);
             }
         });
+    }
+}
+
+class GamepadHandler {
+    constructor(game) {
+        this.game = game;
+        // this.leftPressed = false;
+        // this.rightPressed = false;
+        // this.xPressed = false;
+        // this.upPressed = false;
+        // this.downPressed = false;
+
+    }
+
+    update() {
+        if (controllerIndex !== null) {
+            const gamepad = navigator.getGamepads()[controllerIndex];
+            const buttons = gamepad.buttons;
+            // for (let index = 0; index < buttons.length; index++) {
+            //     const element = buttons[index];
+            //     if (element.pressed) {
+            //         console.log(index);
+            //     }
+            // }
+            if (buttons[14].pressed && this.game.keys.indexOf('LeftPressed') === -1 && !this.game.gameOver) {
+                this.game.keys.push('LeftPressed');
+            }
+            if (buttons[15].pressed && this.game.keys.indexOf('RightPressed') === -1 && !this.game.gameOver) {
+                this.game.keys.push('RightPressed');
+            }
+            if (buttons[0].pressed && !this.game.gameOver && !this.game.fired) {
+                this.game.fired = true;
+                this.game.player.shoot();
+            }
+            if (buttons[9].pressed && this.game.gameOver) {
+                this.game.restart();
+            }
+        }
     }
 }
 
@@ -337,6 +394,7 @@ class Game {
         this.sound.src = 'assets/audios/background.mp3';
         this.sound.loop = true;
         this.isMusic = true;
+        this.gamepad = new GamepadHandler(this);
     }
 
     draw(context) {
@@ -364,6 +422,7 @@ class Game {
             this.spriteUpdate = false;
             this.spriteTimer += deltaTime;
         }
+        this.gamepad.update();
         this.player.update();
         this.projectilesPool.forEach(projectile => {
             projectile.update();
