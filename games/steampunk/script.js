@@ -1,3 +1,12 @@
+let controllerIndex = null;
+window.addEventListener('gamepadconnected', function (e) {
+  controllerIndex = e.gamepad.index;
+});
+
+window.addEventListener('gamepaddisconnected', function (e) {
+  controllerIndex = null;
+});
+
 window.addEventListener('load', function () {
   // canvas setup
   const canvas = this.document.getElementById('mainPlay');
@@ -25,6 +34,114 @@ window.addEventListener('load', function () {
     }
   }
 
+  class GamepadHandler {
+    constructor(game) {
+      this.game = game;
+      this.upPressed = false;
+      this.downPressed = false;
+      this.greenPressed = false;
+      this.bluePressed = false;
+      this.redPressed = false;
+      this.yellowPressed = false;
+      this.startPressed = false;
+    }
+
+    update() {
+      if (controllerIndex !== null) {
+        const gamepad = navigator.getGamepads()[controllerIndex];
+        const buttons = gamepad.buttons;
+        for (let index = 0; index < buttons.length; index++) {
+          const button = buttons[index];
+          // if (button.pressed) {
+          //     console.log(index);
+          // }
+          switch (index) {
+            case 0:
+              this.greenPressed = button.pressed;
+              break;
+            case 1:
+              this.redPressed = button.pressed;
+              break;
+            case 2:
+              this.bluePressed = button.pressed;
+              break;
+            case 3:
+              this.yellowPressed = button.pressed;
+              break;
+            case 4:
+              break;
+            case 5:
+              break;
+            case 6:
+              break;
+            case 7:
+              break;
+            case 8:
+              break;
+            case 9:
+              this.startPressed = button.pressed;
+              break;
+            case 10:
+              break;
+            case 11:
+              break;
+            case 12:
+              this.upPressed = button.pressed;
+              break;
+            case 13:
+              this.downPressed = button.pressed;
+              break;
+            case 14:
+              // this.leftPressed = button.pressed;
+              break;
+            case 15:
+              // this.rightPressed = button.pressed;
+              break;
+            case 16:
+              break;
+            case 17:
+              break;
+            default:
+              break;
+          }
+        }
+        const stickDeadZone = 0.4;
+        const upDownAxesOneValue = gamepad.axes[1];
+        const upDownAxesTwoValue = gamepad.axes[3];
+        if (upDownAxesOneValue >= stickDeadZone) {
+          this.downPressed = true;
+        } else if (upDownAxesOneValue <= -stickDeadZone) {
+          this.upPressed = true;
+        }
+        if (upDownAxesTwoValue >= stickDeadZone) {
+          this.downPressed = true;
+        } else if (upDownAxesTwoValue <= -stickDeadZone) {
+          this.upPressed = true;
+        }
+
+        if (this.upPressed && this.game.keys.indexOf('UpPressed') === -1 && !this.game.gameOver) {
+          this.game.keys.push('UpPressed');
+        } else if (!this.upPressed && this.game.keys.indexOf('UpPressed') > -1 && !this.game.gameOver) {
+          this.game.keys.splice(this.game.keys.indexOf('UpPressed'), 1);
+        }
+        if (this.downPressed && this.game.keys.indexOf('DownPressed') === -1 && !this.game.gameOver) {
+          this.game.keys.push('DownPressed');
+        } else if (!this.downPressed && this.game.keys.indexOf('DownPressed') > -1 && !this.game.gameOver) {
+          this.game.keys.splice(this.game.keys.indexOf('DownPressed'), 1);
+        }
+        if (this.greenPressed && !this.game.gameOver && !this.game.fired) {
+          this.game.fired = true;
+          this.game.player.shootTop();
+        } else if (!this.greenPressed && !this.game.gameOver && this.game.fired) {
+          this.game.fired = false;
+        }
+        if (this.startPressed && this.game.gameOver) {
+          // this.game.restart();
+        }
+      }
+    }
+  }
+
   class Projectile {
     constructor(game, x, y) {
       this.game = game;
@@ -39,12 +156,12 @@ window.addEventListener('load', function () {
       this.sound.src = 'assets/audios/laseShoot.wav';
     }
 
-    update () {
+    update() {
       this.x += this.speed;
       if (this.x > this.game.width * 1.2) this.markedForDeletion = true;
     }
 
-    draw (context) {
+    draw(context) {
       // context.fillStyle = 'yellow';
       if (this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
       context.drawImage(this.image, this.x, this.y);
@@ -76,7 +193,7 @@ window.addEventListener('load', function () {
       this.bottomBounceBoundary = Math.random() * 80 + 60;
     }
 
-    update () {
+    update() {
       this.angle += this.va;
       this.speedY += this.gravity;
       this.x -= this.speedX - this.game.speed;
@@ -90,7 +207,7 @@ window.addEventListener('load', function () {
       }
     }
 
-    draw (context) {
+    draw(context) {
       context.save();
       context.translate(this.x, this.y);
       context.rotate(this.angle);
@@ -118,9 +235,9 @@ window.addEventListener('load', function () {
       this.powerUpLimit = 10000;
     }
 
-    update (deltaTime) {
-      if (this.game.keys.includes('ArrowUp')) this.speedY = -this.maxSpeed;
-      else if (this.game.keys.includes('ArrowDown')) this.speedY = this.maxSpeed;
+    update(deltaTime) {
+      if (this.game.keys.includes('ArrowUp') || this.game.keys.includes('UpPressed')) this.speedY = -this.maxSpeed;
+      else if (this.game.keys.includes('ArrowDown') || this.game.keys.includes('DownPressed')) this.speedY = this.maxSpeed;
       else this.speedY = 0;
       this.y += this.speedY;
       // vertical boundaries
@@ -156,8 +273,8 @@ window.addEventListener('load', function () {
 
     }
 
-    draw (context) {
-      if(!this.game.gameOver) {
+    draw(context) {
+      if (!this.game.gameOver) {
         // context.fillStyle = 'black';
         if (this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
         // handle projectiles
@@ -168,7 +285,7 @@ window.addEventListener('load', function () {
       }
     }
 
-    shootTop () {
+    shootTop() {
       if (this.game.ammo > 0) {
         const p = new Projectile(this.game, this.x + 80, this.y + 30);
         p.playSound();
@@ -180,13 +297,13 @@ window.addEventListener('load', function () {
       }
     }
 
-    shootBottom () {
+    shootBottom() {
       if (this.game.ammo > 0) {
         this.projectiles.push(new Projectile(this.game, this.x + 80, this.y + 175));
       }
     }
 
-    enterPowerUp () {
+    enterPowerUp() {
       this.powerUpTimer = 0;
       this.powerUp = true;
       if (this.game.ammo < this.game.maxAmmo) this.game.ammo = this.game.maxAmmo;
@@ -205,8 +322,8 @@ window.addEventListener('load', function () {
 
     }
 
-    update () {
-      if(this.game.gameOver) {
+    update() {
+      if (this.game.gameOver) {
         this.markedForDeletion = true;
       } else {
         this.x += this.speedX - this.game.speed;
@@ -220,7 +337,7 @@ window.addEventListener('load', function () {
       }
     }
 
-    draw (context) {
+    draw(context) {
       // context.fillStyle = 'red';
       if (this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
       context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
@@ -312,12 +429,12 @@ window.addEventListener('load', function () {
       this.y = 0;
     }
 
-    update () {
+    update() {
       if (this.x <= -this.width) this.x = 0;
       this.x -= this.game.speed * this.speedModifier;
     }
 
-    draw (context) {
+    draw(context) {
       context.drawImage(this.image, this.x, this.y);
       context.drawImage(this.image, this.x + this.width, this.y);
     }
@@ -340,13 +457,13 @@ window.addEventListener('load', function () {
       this.layers.push(this.layer3);
     }
 
-    update () {
+    update() {
       this.layers.forEach(layer => {
         layer.update();
       });
     }
 
-    draw (context) {
+    draw(context) {
       this.layers.forEach(layer => {
         layer.draw(context);
       });
@@ -372,8 +489,8 @@ window.addEventListener('load', function () {
       this.sound = new Audio();
     }
 
-    update (deltaTime) {
-      if(this.frameX === 0) this.sound.play();
+    update(deltaTime) {
+      if (this.frameX === 0) this.sound.play();
       this.x -= this.game.speed;
       if (this.timer > this.interval) {
         this.frameX++;
@@ -386,7 +503,7 @@ window.addEventListener('load', function () {
       }
     }
 
-    draw (context) {
+    draw(context) {
       context.drawImage(this.image, this.frameX * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
     }
 
@@ -419,7 +536,7 @@ window.addEventListener('load', function () {
       this.color = 'white';
     }
 
-    draw (context) {
+    draw(context) {
       context.save();
 
       context.fillStyle = this.color;
@@ -495,17 +612,19 @@ window.addEventListener('load', function () {
       this.sound = new Audio();
       this.sound.src = 'assets/audios/background.mp3';
       this.sound.loop = true;
-      
+      this.gamepad = new GamepadHandler(this);
+      this.fired = false;
     }
 
-    update (deltaTime) {
-      if(this.isMusic) {
+    update(deltaTime) {
+      if (this.isMusic) {
         this.sound.play();
       } else {
         this.sound.pause();
       }
       if (!this.gameOver) this.gameTime += deltaTime;
       if (this.gameTime > this.timeLimit) this.gameOver = true;
+      this.gamepad.update();
       this.background.update();
       this.background.layer4.update();
       this.player.update(deltaTime);
@@ -534,7 +653,7 @@ window.addEventListener('load', function () {
           for (let i = 0; i < enemy.score; i++) {
             this.particles.push(new Particle(this, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5));
           }
-          
+
           // Game Over
           this.addExplosion(this.player);
           this.gameOver = true;
@@ -571,7 +690,7 @@ window.addEventListener('load', function () {
       }
     }
 
-    draw (context) {
+    draw(context) {
       this.background.draw(context);
       this.ui.draw(context);
       this.player.draw(context);
@@ -587,7 +706,7 @@ window.addEventListener('load', function () {
       this.background.layer4.draw(context);
     }
 
-    addEnemy () {
+    addEnemy() {
       const randomize = Math.random();
       if (randomize < 0.3) this.enemies.push(new Angler1(this));
       else if (randomize < 0.4) this.enemies.push(new HiveWhale(this));
@@ -596,7 +715,7 @@ window.addEventListener('load', function () {
       else this.enemies.push(new LuckyFish(this));
     }
 
-    addExplosion (enemy) {
+    addExplosion(enemy) {
       const randomize = Math.random();
       if (randomize < 0.5) {
         this.explosions.push(new SmokeExplosion(this, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5));
@@ -605,7 +724,7 @@ window.addEventListener('load', function () {
       }
     }
 
-    checkCollision (rect1, rect2) {
+    checkCollision(rect1, rect2) {
       return (
         rect1.x < rect2.x + rect2.width &&
         rect1.x + rect1.width > rect2.x &&
@@ -619,7 +738,7 @@ window.addEventListener('load', function () {
   const game = new Game(canvas.width, canvas.height);
   let lastTime = 0;
   // animation loop
-  function animate (timeStamp) {
+  function animate(timeStamp) {
     const deltaTime = timeStamp - lastTime;
     lastTime = timeStamp;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
