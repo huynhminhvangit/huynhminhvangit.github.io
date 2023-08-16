@@ -417,6 +417,50 @@ class UI {
     }
 }
 
+class Background {
+    constructor(game) {
+        this.game = game;
+        this.image1 = document.getElementById('background');
+        this.layer1 = new Layer(this.game, this.image1, 0.6);
+        this.layers = [];
+        this.layers.push(this.layer1);
+    }
+
+    update() {
+        this.layers.forEach(layer => {
+            layer.update();
+        });
+    }
+
+    draw(context) {
+        this.layers.forEach(layer => {
+            layer.draw(context);
+        });
+    }
+}
+
+class Layer {
+    constructor(game, image, speedModifier) {
+        this.game = game;
+        this.image = image;
+        this.speedModifier = speedModifier;
+        this.width = this.game.width;
+        this.height = this.game.height;
+        this.x = 0;
+        this.y = 0;
+    }
+
+    update() {
+        if (this.x <= -this.width) this.x = 0;
+        this.x -= this.game.speed * this.speedModifier;
+    }
+
+    draw(context) {
+        context.drawImage(this.image, this.x, this.y, this.width, this.height);
+        context.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
+    }
+}
+
 class Game {
     constructor(canvas) {
         this.canvas = canvas;
@@ -446,10 +490,13 @@ class Game {
         this.sound.src = 'assets/audios/background.mp3';
         this.sound.loop = true;
         this.isMusic = true;
+        this.speed = 1;
         this.gamepad = new GamepadHandler(this);
+        this.background = new Background(this);
     }
 
     draw(context) {
+        this.background.draw(context);
         this.projectilesPool.forEach(projectile => {
             projectile.draw(context);
         });
@@ -474,6 +521,7 @@ class Game {
             this.spriteUpdate = false;
             this.spriteTimer += deltaTime;
         }
+        this.background.update();
         this.gamepad.update();
         this.player.update();
         this.projectilesPool.forEach(projectile => {
@@ -538,8 +586,8 @@ class Game {
 window.addEventListener('load', function () {
     const canvas = document.getElementById("canvas1");
     const ctx = canvas.getContext("2d");
-    canvas.width = 600;
-    canvas.height = window.innerHeight - window.innerHeight * 0.05;
+    canvas.width = window.innerWidth - window.innerWidth * 0.01;
+    canvas.height = window.innerHeight - window.innerHeight * 0.01;
     ctx.fillStyle = 'white';
     ctx.strokeStyle = 'white';
 

@@ -11,8 +11,8 @@ window.addEventListener('load', function () {
   // canvas setup
   const canvas = this.document.getElementById('mainPlay');
   const ctx = canvas.getContext('2d');
-  canvas.width = 1000;
-  canvas.height = 500;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
   class InputHandler {
     constructor(game) {
@@ -20,7 +20,8 @@ window.addEventListener('load', function () {
       window.addEventListener('keydown', e => {
         if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && this.game.keys.indexOf(e.key) === -1) {
           this.game.keys.push(e.key);
-        } else if (e.key === ' ') {
+        } else if (e.key === ' ' && !this.game.gameOver && !this.game.fired) {
+          this.game.fired = true;
           this.game.player.shootTop();
         } else if (e.key === 'd') {
           this.game.debug = !this.game.debug;
@@ -29,6 +30,7 @@ window.addEventListener('load', function () {
         }
       });
       window.addEventListener('keyup', e => {
+        this.game.fired = false;
         if (this.game.keys.indexOf(e.key) > -1) {
           this.game.keys.splice(this.game.keys.indexOf(e.key), 1);
         }
@@ -425,8 +427,8 @@ window.addEventListener('load', function () {
       this.game = game;
       this.image = image;
       this.speedModifier = speedModifier;
-      this.width = 1768;
-      this.height = 500;
+      this.width = this.game.width;
+      this.height = this.game.height;
       this.x = 0;
       this.y = 0;
     }
@@ -437,8 +439,8 @@ window.addEventListener('load', function () {
     }
 
     draw(context) {
-      context.drawImage(this.image, this.x, this.y);
-      context.drawImage(this.image, this.x + this.width, this.y);
+      context.drawImage(this.image, this.x, this.y, this.width, this.height);
+      context.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
     }
   }
 
@@ -694,7 +696,6 @@ window.addEventListener('load', function () {
 
     draw(context) {
       this.background.draw(context);
-      this.ui.draw(context);
       this.player.draw(context);
       this.particles.forEach(particle => {
         particle.draw(context);
@@ -706,6 +707,7 @@ window.addEventListener('load', function () {
         explosion.draw(context);
       });
       this.background.layer4.draw(context);
+      this.ui.draw(context);
     }
 
     addEnemy() {
