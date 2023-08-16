@@ -24,6 +24,8 @@ window.addEventListener('load', function () {
           this.game.player.shootTop();
         } else if (e.key === 'd') {
           this.game.debug = !this.game.debug;
+        } else if ((e.key === 'r' || e.key === 'R') && this.game.gameOver) {
+          this.game.restart();
         }
       });
       window.addEventListener('keyup', e => {
@@ -136,7 +138,7 @@ window.addEventListener('load', function () {
           this.game.fired = false;
         }
         if (this.startPressed && this.game.gameOver) {
-          // this.game.restart();
+          this.game.restart();
         }
       }
     }
@@ -563,8 +565,8 @@ window.addEventListener('load', function () {
           message1 = 'Most Wondrous!';
           message2 = 'Well done explorer!';
         } else {
-          message1 = 'Blazes!';
-          message2 = 'Get my repair kit and try again!';
+          message1 = 'Game Over!!!';
+          message2 = 'Press R to restart!';
         }
         context.font = '70px ' + this.fontFamily;
         context.fillText(message1, this.game.width * 0.5, this.game.height * 0.5 - 20);
@@ -731,6 +733,28 @@ window.addEventListener('load', function () {
         rect1.y < rect2.y + rect2.height &&
         rect1.height + rect1.y > rect2.y
       );
+    }
+
+    restart() {
+      this.keys = [];
+      this.enemies = [];
+      this.particles = [];
+      this.explosions = [];
+      this.enemyTimer = 0;
+      this.enemyInterval = 2000;
+      this.ammo = 20;
+      this.maxAmmo = 50;
+      this.ammoTimer = 0;
+      this.ammoInterval = 350;
+      this.gameOver = false;
+      this.score = 0;
+      this.winningScore = 999999;
+      this.gameTime = 0;
+      this.timeLimit = 60000000000;
+      // speed layer and background
+      this.speed = 1;
+      this.fired = false;
+      this.player = new Player(this);
     }
 
   }
