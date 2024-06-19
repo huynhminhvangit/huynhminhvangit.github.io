@@ -61,6 +61,10 @@
     content: 'S';
 }
 
+.button:nth-of-type(4) span::before {
+    content: 'V';
+}
+
 .button::after {
     content: '';
     position: absolute;
