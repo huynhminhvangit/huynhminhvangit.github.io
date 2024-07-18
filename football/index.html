@@ -78,6 +78,15 @@
         })
         document.getElementById('prevBtn').addEventListener('click', prevImage);
         document.getElementById('nextBtn').addEventListener('click', nextImage);
+        
+        // Add touch event for mobile devices
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches[0].pageX < window.innerWidth / 2) {
+                prevImage();
+            } else {
+                nextImage();
+            }
+        });
     </script>
     <style>
         .img-container {
@@ -131,3 +140,4 @@
 </body>
 
 </html>
+
