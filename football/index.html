@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <title>Football - Huỳnh Minh Vàng - Chuyên gia Lập Trình Viên</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="img-container">
+        <img id="imgSrc" src="assets/images/IMTC_1.jpg">
+        <div class="img-overlay">
+            <button id="prevBtn" class="btn-fixed">Prev</button>
+            <button id="nextBtn" class="btn-fixed">Next</button>
+        </div>
+    </div>
+    <div class="img-title-container" style="text-align: center;">
+        <h1 class="img-title"></h1>
+    </div>
+
+    <script>
+        var imgSrc = document.getElementById('imgSrc');
+        var imgOverlay = document.querySelector('.img-overlay');
+        var imgTitle = document.querySelector('.img-title');
+        var currentImg = 1;
+
+        function openImage(index) {
+            imgSrc.src = `assets/images/IMTC_${index}.jpg`
+            imgTitle.innerHTML = `IMTC_${index}.jpg`
+        }
+
+        function closeImage() {
+            // imgOverlay.style.display = 'none';
+        }
+
+        function prevImage() {
+            if (currentImg > 1) {
+                currentImg--;
+                openImage(currentImg);
+            }
+        }
+
+        function nextImage() {
+            if (currentImg < 184) {
+                currentImg++;
+                openImage(currentImg);
+            }
+        }
+
+        window.addEventListener('keyup', function(e) {
+            if (e.key === 'Escape') {
+                closeImage();
+            } else if (e.key === 'ArrowLeft') {
+                prevImage();
+            } else if (e.key === 'ArrowRight') {
+                nextImage();
+            }
+        })
+        imgOverlay.addEventListener('click', function() {
+            closeImage();
+        })
+        document.getElementById('prevBtn').addEventListener('click', prevImage);
+        document.getElementById('nextBtn').addEventListener('click', nextImage);
+    </script>
+    <style>
+        .img-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+
+        .img-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #imgSrc {
+            max-width: 90%;
+            max-height: 90%;
+            cursor: pointer;
+        }
+
+        .btn-fixed {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        #prevBtn {
+            left: calc(50% - 8rem);
+        }
+
+        #nextBtn {
+            left: calc(50% + 8rem);
+        }
+    </style>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
