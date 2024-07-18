@@ -28,17 +28,21 @@
         </div>
     </div>
     <div class="img-title-container" style="text-align: center;">
-        <h1 class="img-title"></h1>
+        <h1 class="img-title">IMTC_1.jpg</h1>
+        <a class="img-link" href="assets/images/IMTC_1.jpg" target="_blank">IMTC_1.jpg</a>
     </div>
 
     <script>
         var imgSrc = document.getElementById('imgSrc');
         var imgOverlay = document.querySelector('.img-overlay');
         var imgTitle = document.querySelector('.img-title');
+        var imgLink = document.querySelector('.img-link');
         var currentImg = 1;
 
         function openImage(index) {
             imgSrc.src = `assets/images/IMTC_${index}.jpg`
+            imgLink.href = `assets/images/IMTC_${index}.jpg`;
+            imgLink.innerHTML = `IMTC_${index}.jpg`;
             imgTitle.innerHTML = `IMTC_${index}.jpg`
         }
 
