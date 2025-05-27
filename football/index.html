@@ -37,6 +37,46 @@
         <a class="img-link" href="assets/images/IMTC_1.jpg" target="_blank">IMTC_1.jpg</a>
     </div>
 
+    <!-- Keyboard shortcuts modal -->
+    <div id="shortcutsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Hướng Dẫn Sử Dụng</h2>
+            <table class="shortcuts-table">
+                <tr>
+                    <th>Phím / Thao Tác</th>
+                    <th>Chức Năng</th>
+                </tr>
+                <tr>
+                    <td><kbd>&larr;</kbd> hoặc click nút trái</td>
+                    <td>Ảnh trước</td>
+                </tr>
+                <tr>
+                    <td><kbd>&rarr;</kbd> hoặc click nút phải</td>
+                    <td>Ảnh tiếp theo</td>
+                </tr>
+                <tr>
+                    <td><kbd>F</kbd> hoặc double-click vào ảnh</td>
+                    <td>Xem ảnh toàn màn hình</td>
+                </tr>
+                <tr>
+                    <td><kbd>ESC</kbd></td>
+                    <td>Thoát chế độ toàn màn hình</td>
+                </tr>
+                <tr>
+                    <td>Click nút <i class="fullscreen-icon" style="font-size: 1rem;">⛶</i></td>
+                    <td>Bật/tắt chế độ toàn màn hình</td>
+                </tr>
+            </table>
+            <div class="modal-footer">
+                <label for="dontShowAgain">
+                    <input type="checkbox" id="dontShowAgain"> Không hiển thị lần sau
+                </label>
+                <button id="okButton" class="ok-button">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         var imgSrc = document.getElementById('imgSrc');
         var imgOverlay = document.querySelector('.img-overlay');
@@ -45,6 +85,35 @@
         var currentImg = 1;
         var isFullscreen = false;
         var imgContainer = document.querySelector('.img-container');
+        var modal = document.getElementById('shortcutsModal');
+        var closeBtn = document.querySelector('.close-btn');
+        var okButton = document.getElementById('okButton');
+        var dontShowCheckbox = document.getElementById('dontShowAgain');
+
+        // Show modal on page load if it's not been disabled
+        window.onload = function() {
+            if (localStorage.getItem('dontShowShortcutsModal') !== 'true') {
+                modal.style.display = 'flex';
+            }
+        };
+
+        // Close modal functions
+        function closeModal() {
+            modal.style.display = 'none';
+            if (dontShowCheckbox.checked) {
+                localStorage.setItem('dontShowShortcutsModal', 'true');
+            }
+        }
+
+        closeBtn.onclick = closeModal;
+        okButton.onclick = closeModal;
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        };
 
         function openImage(index) {
             imgSrc.src = `assets/images/IMTC_${index}.jpg`
@@ -262,6 +331,108 @@
         .img-container:fullscreen #imgSrc {
             max-width: 100%;
             max-height: 100%;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.4s;
+        }
+
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-30px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .shortcuts-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .shortcuts-table th, .shortcuts-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .shortcuts-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .shortcuts-table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        kbd {
+            background-color: #eee;
+            border-radius: 3px;
+            border: 1px solid #b4b4b4;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+            color: #333;
+            display: inline-block;
+            font-size: 0.85em;
+            font-family: monospace;
+            padding: 2px 6px;
+            vertical-align: middle;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .ok-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .ok-button:hover {
+            background-color: #45a049;
         }
     </style>
     <script src="script.js"></script>
