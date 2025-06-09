@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Test - Trí Tuệ Nhỏ</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .test-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .test-button:active {
+            transform: translateY(0);
+        }
+        
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+            border-left: 4px solid #f44336;
+        }
+        
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+            border-left: 4px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎵 Audio System Test</h1>
+        <p>Test the sound system functionality for Trí Tuệ Nhỏ</p>
+        
+        <div class="status" id="status">
+            Click a button to test audio functionality
+        </div>
+        
+        <button class="test-button" onclick="testSoundEffects()">
+            🔊 Test Sound Effects
+        </button>
+        
+        <button class="test-button" onclick="testBackgroundMusic()">
+            🎵 Test Background Music
+        </button>
+        
+        <button class="test-button" onclick="testSoundToggle()">
+            🔇 Test Sound Toggle
+        </button>
+        
+        <button class="test-button" onclick="testVolumeControl()">
+            🔉 Test Volume Control
+        </button>
+        
+        <button class="test-button" onclick="runFullTest()">
+            ✅ Run Full Test
+        </button>
+        
+        <div style="margin-top: 20px;">
+            <a href="index.html" style="color: #fff; text-decoration: none;">
+                ← Back to Game
+            </a>
+        </div>
+    </div>
+
+    <script src="sound-manager.js"></script>
+    <script>
+        let soundManager;
+        let testResults = [];
+        
+        // Initialize sound manager
+        async function initSoundManager() {
+            try {
+                soundManager = new SoundManager();
+                await soundManager.loadAllSounds();
+                updateStatus('Sound Manager initialized successfully', 'success');
+                return true;
+            } catch (error) {
+                updateStatus('Failed to initialize Sound Manager: ' + error.message, 'error');
+                return false;
+            }
+        }
+        
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status ' + type;
+            console.log('[Audio Test]', message);
+        }
+        
+        async function testSoundEffects() {
+            updateStatus('Testing sound effects...', 'info');
+            
+            if (!soundManager) {
+                const initialized = await initSoundManager();
+                if (!initialized) return;
+            }
+            
+            try {
+                // Test different sound effects
+                const sounds = ['click', 'success', 'error', 'cardFlip', 'typing'];
+                let successCount = 0;
+                
+                for (let i = 0; i < sounds.length; i++) {
+                    setTimeout(() => {
+                        try {
+                            soundManager.play(sounds[i]);
+                            successCount++;
+                            updateStatus(`Playing ${sounds[i]} sound (${i + 1}/${sounds.length})`, 'info');
+                            
+                            if (i === sounds.length - 1) {
+                                setTimeout(() => {
+                                    updateStatus(`Sound effects test completed! ${successCount}/${sounds.length} sounds played`, 'success');
+                                }, 1000);
+                            }
+                        } catch (error) {
+                            updateStatus(`Failed to play ${sounds[i]}: ${error.message}`, 'error');
+                        }
+                    }, i * 800);
+                }
+            } catch (error) {
+                updateStatus('Sound effects test failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function testBackgroundMusic() {
+            updateStatus('Testing background music...', 'info');
+            
+            if (!soundManager) {
+                const initialized = await initSoundManager();
+                if (!initialized) return;
+            }
+            
+            try {
+                soundManager.startBackgroundMusic();
+                updateStatus('Background music started. You should hear music playing.', 'success');
+                
+                setTimeout(() => {
+                    soundManager.stopBackgroundMusic();
+                    updateStatus('Background music stopped.', 'info');
+                }, 5000);
+            } catch (error) {
+                updateStatus('Background music test failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function testSoundToggle() {
+            updateStatus('Testing sound toggle...', 'info');
+            
+            if (!soundManager) {
+                const initialized = await initSoundManager();
+                if (!initialized) return;
+            }
+            
+            try {
+                // Test toggle off
+                const soundEnabled1 = soundManager.toggleSound();
+                updateStatus(`Sound toggled: ${soundEnabled1 ? 'ON' : 'OFF'}`, 'info');
+                
+                setTimeout(() => {
+                    // Test toggle on
+                    const soundEnabled2 = soundManager.toggleSound();
+                    updateStatus(`Sound toggled: ${soundEnabled2 ? 'ON' : 'OFF'}`, 'success');
+                    
+                    // Play test sound
+                    setTimeout(() => {
+                        soundManager.play('click');
+                        updateStatus('Sound toggle test completed!', 'success');
+                    }, 500);
+                }, 2000);
+            } catch (error) {
+                updateStatus('Sound toggle test failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function testVolumeControl() {
+            updateStatus('Testing volume control...', 'info');
+            
+            if (!soundManager) {
+                const initialized = await initSoundManager();
+                if (!initialized) return;
+            }
+            
+            try {
+                const volumes = [0.2, 0.5, 0.8, 1.0];
+                let currentVolume = 0;
+                
+                const testVolume = () => {
+                    if (currentVolume < volumes.length) {
+                        const vol = volumes[currentVolume];
+                        soundManager.setVolume(vol);
+                        soundManager.play('click');
+                        updateStatus(`Testing volume: ${Math.round(vol * 100)}%`, 'info');
+                        currentVolume++;
+                        setTimeout(testVolume, 1500);
+                    } else {
+                        updateStatus('Volume control test completed!', 'success');
+                    }
+                };
+                
+                testVolume();
+            } catch (error) {
+                updateStatus('Volume control test failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function runFullTest() {
+            updateStatus('Running full audio system test...', 'info');
+            testResults = [];
+            
+            try {
+                // Initialize
+                const initialized = await initSoundManager();
+                if (!initialized) return;
+                
+                // Test 1: Sound Effects
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        testSoundEffects();
+                        resolve();
+                    }, 1000);
+                });
+                
+                // Test 2: Background Music
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        testBackgroundMusic();
+                        resolve();
+                    }, 6000);
+                });
+                
+                // Test 3: Sound Toggle
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        testSoundToggle();
+                        resolve();
+                    }, 12000);
+                });
+                
+                // Test 4: Volume Control
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        testVolumeControl();
+                        resolve();
+                    }, 17000);
+                });
+                
+                // Final result
+                setTimeout(() => {
+                    updateStatus('🎉 Full audio system test completed! All features tested.', 'success');
+                }, 25000);
+                
+            } catch (error) {
+                updateStatus('Full test failed: ' + error.message, 'error');
+            }
+        }
+        
+        // Auto-initialize on page load
+        window.addEventListener('load', () => {
+            updateStatus('Audio test ready. Click any button to begin testing.', 'info');
+        });
+    </script>
+</body>
+</html>

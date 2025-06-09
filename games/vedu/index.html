@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Trí Tuệ Nhỏ">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Trí Tuệ Nhỏ - Game Học Tập Thông Minh Cho Trẻ Em</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="logo-animation">
+                <div class="brain-icon">🧠</div>
+                <h2>Trí Tuệ Nhỏ</h2>
+            </div>
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Đang khởi động trí tuệ...</div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar" id="loadingProgressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Effects -->
+    <div class="background-effects">
+        <div class="floating-shapes"></div>
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <!-- Sound Toggle -->
+    <div class="sound-toggle" id="soundToggle">
+        <div class="sound-icon">🔊</div>
+        <div class="sound-waves">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        <!-- Main Menu -->
+        <div class="screen" id="mainMenuScreen">
+            <div class="menu-header">
+                <div class="logo">
+                    <div class="logo-icon">🧠</div>
+                    <h1>Trí Tuệ Nhỏ</h1>
+                    <p>Học tập thông minh, vui chơi sáng tạo</p>
+                </div>
+            </div>
+
+            <div class="menu-content">
+                <div class="game-modes">
+                    <div class="mode-card" data-mode="quiz">
+                        <div class="mode-icon">❓</div>
+                        <h3>Trắc Nghiệm</h3>
+                        <p>Thử thách kiến thức với câu hỏi đa dạng</p>
+                        <div class="mode-stats">
+                            <span>📚 Toán - Văn - Anh</span>
+                        </div>
+                    </div>
+
+                    <div class="mode-card" data-mode="memory">
+                        <div class="mode-icon">🧩</div>
+                        <h3>Trí Nhớ</h3>
+                        <p>Rèn luyện trí nhớ với game lật thẻ</p>
+                        <div class="mode-stats">
+                            <span>🎯 24 cấp độ</span>
+                        </div>
+                    </div>
+
+                    <div class="mode-card" data-mode="puzzle">
+                        <div class="mode-icon">🧩</div>
+                        <h3>Ghép Hình</h3>
+                        <p>Phát triển tư duy logic với puzzle</p>
+                        <div class="mode-stats">
+                            <span>🎲 Nhiều chủ đề</span>
+                        </div>
+                    </div>
+
+                    <div class="mode-card" data-mode="typing">
+                        <div class="mode-icon">⌨️</div>
+                        <h3>Đánh Máy</h3>
+                        <p>Luyện tập kỹ năng đánh máy nhanh</p>
+                        <div class="mode-stats">
+                            <span>⚡ Tăng tốc độ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-buttons">
+                    <button class="menu-btn secondary" id="profileBtn">
+                        <span class="btn-icon">👤</span>
+                        Hồ sơ
+                    </button>
+                    <button class="menu-btn secondary" id="achievementsBtn">
+                        <span class="btn-icon">🏆</span>
+                        Thành tích
+                    </button>
+                    <button class="menu-btn secondary" id="settingsBtn">
+                        <span class="btn-icon">⚙️</span>
+                        Cài đặt
+                    </button>
+                    <button class="menu-btn secondary" id="helpBtn">
+                        <span class="btn-icon">❓</span>
+                        Hướng dẫn
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Setup Screen -->
+        <div class="screen" id="quizSetupScreen" style="display: none;">
+            <div class="screen-header">
+                <button class="back-btn" id="backToMainFromQuiz">
+                    <span>←</span>
+                </button>
+                <h2>🎯 Thiết lập trắc nghiệm</h2>
+            </div>
+
+            <div class="setup-content">
+                <div class="setup-section">
+                    <h3>📚 Chọn môn học</h3>
+                    <div class="subject-grid">
+                        <div class="subject-card" data-subject="math">
+                            <div class="subject-icon">🔢</div>
+                            <span>Toán học</span>
+                        </div>
+                        <div class="subject-card" data-subject="vietnamese">
+                            <div class="subject-icon">📖</div>
+                            <span>Tiếng Việt</span>
+                        </div>
+                        <div class="subject-card" data-subject="english">
+                            <div class="subject-icon">🇺🇸</div>
+                            <span>Tiếng Anh</span>
+                        </div>
+                        <div class="subject-card" data-subject="science">
+                            <div class="subject-icon">🔬</div>
+                            <span>Khoa học</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setup-section">
+                    <h3>🎓 Chọn cấp độ</h3>
+                    <div class="level-selector">
+                        <button class="level-btn" data-level="1">Lớp 1</button>
+                        <button class="level-btn" data-level="2">Lớp 2</button>
+                        <button class="level-btn" data-level="3">Lớp 3</button>
+                        <button class="level-btn" data-level="4">Lớp 4</button>
+                        <button class="level-btn" data-level="5">Lớp 5</button>
+                    </div>
+                </div>
+
+                <div class="setup-section">
+                    <h3>⚡ Độ khó</h3>
+                    <div class="difficulty-selector">
+                        <div class="difficulty-card" data-difficulty="easy">
+                            <div class="difficulty-icon">😊</div>
+                            <span>Dễ</span>
+                            <small>10 câu - 45s/câu</small>
+                        </div>
+                        <div class="difficulty-card" data-difficulty="medium">
+                            <div class="difficulty-icon">😐</div>
+                            <span>Vừa</span>
+                            <small>15 câu - 30s/câu</small>
+                        </div>
+                        <div class="difficulty-card" data-difficulty="hard">
+                            <div class="difficulty-icon">😤</div>
+                            <span>Khó</span>
+                            <small>20 câu - 20s/câu</small>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-game-btn" id="startQuizBtn" disabled>
+                    <span class="btn-icon">🚀</span>
+                    Bắt đầu trắc nghiệm
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Game Screen -->
+        <div class="screen" id="quizGameScreen" style="display: none;">
+            <div class="game-header">
+                <div class="game-info">
+                    <div class="score-display">
+                        <span class="label">Điểm</span>
+                        <span class="value" id="currentScore">0</span>
+                    </div>
+                    <div class="progress-display">
+                        <span class="label">Tiến độ</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="gameProgress"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">1/10</span>
+                    </div>
+                    <div class="lives-display">
+                        <span class="label">Mạng</span>
+                        <div class="hearts" id="heartsContainer">
+                            <span class="heart">❤️</span>
+                            <span class="heart">❤️</span>
+                            <span class="heart">❤️</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="pause-btn" id="pauseBtn">⏸️</button>
+            </div>
+
+            <div class="question-container">
+                <div class="timer-container">
+                    <div class="timer-circle">
+                        <svg class="timer-svg" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" class="timer-background"></circle>
+                            <circle cx="50" cy="50" r="45" class="timer-progress" id="timerProgress"></circle>
+                        </svg>
+                        <span class="timer-text" id="timerText">30</span>
+                    </div>
+                </div>
+
+                <div class="question-content">
+                    <h3 class="question-text" id="questionText">Câu hỏi sẽ xuất hiện ở đây...</h3>
+                    
+                    <div class="answers-grid" id="answersGrid">
+                        <!-- Answers will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="power-ups" id="powerUps">
+                    <button class="power-up" id="skipPowerUp" title="Bỏ qua câu hỏi">
+                        <span class="power-icon">⏭️</span>
+                        <span class="power-count">2</span>
+                    </button>
+                    <button class="power-up" id="hintPowerUp" title="Gợi ý 50/50">
+                        <span class="power-icon">💡</span>
+                        <span class="power-count">1</span>
+                    </button>
+                    <button class="power-up" id="timePowerUp" title="Thêm thời gian">
+                        <span class="power-icon">⏰</span>
+                        <span class="power-count">1</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen" id="resultsScreen" style="display: none;">
+            <div class="results-header">
+                <h2>🎉 Kết quả</h2>
+            </div>
+
+            <div class="results-content">
+                <div class="score-summary">
+                    <div class="final-score">
+                        <span class="score-number" id="finalScore">0</span>
+                        <span class="score-label">điểm</span>
+                    </div>
+                    
+                    <div class="rating-stars" id="ratingStars">
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                    </div>
+                    
+                    <div class="performance-text" id="performanceText">Xuất sắc!</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-icon">✅</span>
+                        <span class="stat-value" id="correctCount">0</span>
+                        <span class="stat-label">Đúng</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">❌</span>
+                        <span class="stat-value" id="wrongCount">0</span>
+                        <span class="stat-label">Sai</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">🎯</span>
+                        <span class="stat-value" id="accuracyRate">0%</span>
+                        <span class="stat-label">Chính xác</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">⏱️</span>
+                        <span class="stat-value" id="totalTime">0s</span>
+                        <span class="stat-label">Thời gian</span>
+                    </div>
+                </div>
+
+                <div class="achievements-section" id="achievementsSection">
+                    <h3>🏆 Thành tích mới</h3>
+                    <div class="achievements-list" id="newAchievements">
+                        <!-- New achievements will be populated here -->
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button class="action-btn primary" id="playAgainBtn">
+                        <span class="btn-icon">🔄</span>
+                        Chơi lại
+                    </button>
+                    <button class="action-btn secondary" id="shareResultsBtn">
+                        <span class="btn-icon">📤</span>
+                        Chia sẻ
+                    </button>
+                    <button class="action-btn secondary" id="backToMenuBtn">
+                        <span class="btn-icon">🏠</span>
+                        Về menu
+                    </button>
+                </div>
+            </div>        </div>
+
+        <!-- Memory Game Setup Screen -->
+        <div class="screen" id="memorySetupScreen" style="display: none;">
+            <div class="screen-header">
+                <button class="back-btn" id="backToMainFromMemory">
+                    <span>←</span>
+                </button>
+                <h2>🧩 Thiết lập game trí nhớ</h2>
+            </div>
+
+            <div class="setup-content">
+                <div class="setup-section">
+                    <h3>🎯 Chủ đề</h3>
+                    <div class="theme-selector">
+                        <div class="theme-card" data-theme="animals">
+                            <div class="theme-icon">🐱</div>
+                            <span>Động vật</span>
+                        </div>
+                        <div class="theme-card" data-theme="fruits">
+                            <div class="theme-icon">🍎</div>
+                            <span>Trái cây</span>
+                        </div>
+                        <div class="theme-card" data-theme="colors">
+                            <div class="theme-icon">🎨</div>
+                            <span>Màu sắc</span>
+                        </div>
+                        <div class="theme-card" data-theme="numbers">
+                            <div class="theme-icon">🔢</div>
+                            <span>Số học</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setup-section">
+                    <h3>⚡ Mức độ khó</h3>
+                    <div class="memory-difficulty-selector">
+                        <div class="memory-difficulty-card" data-difficulty="easy">
+                            <div class="difficulty-icon">😊</div>
+                            <span>Dễ</span>
+                            <small>4x3 - 12 thẻ</small>
+                        </div>
+                        <div class="memory-difficulty-card" data-difficulty="medium">
+                            <div class="difficulty-icon">😐</div>
+                            <span>Vừa</span>
+                            <small>4x4 - 16 thẻ</small>
+                        </div>
+                        <div class="memory-difficulty-card" data-difficulty="hard">
+                            <div class="difficulty-icon">😤</div>
+                            <span>Khó</span>
+                            <small>6x4 - 24 thẻ</small>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-game-btn" id="startMemoryBtn" disabled>
+                    <span class="btn-icon">🚀</span>
+                    Bắt đầu game trí nhớ
+                </button>
+            </div>
+        </div>
+
+        <!-- Memory Game Screen -->
+        <div class="screen" id="memoryGameScreen" style="display: none;">
+            <div class="game-header">
+                <div class="game-info">
+                    <div class="score-display">
+                        <span class="label">Điểm</span>
+                        <span class="value" id="memoryScore">0</span>
+                    </div>
+                    <div class="moves-display">
+                        <span class="label">Lượt đi</span>
+                        <span class="value" id="movesCount">0</span>
+                    </div>
+                    <div class="pairs-display">
+                        <span class="label">Cặp tìm được</span>
+                        <span class="value" id="pairsFound">0/0</span>
+                    </div>
+                </div>
+                <div class="timer-display">
+                    <span class="label">Thời gian</span>
+                    <span class="value" id="memoryTimer">0:00</span>
+                </div>
+            </div>
+
+            <div class="memory-board" id="memoryBoard">
+                <!-- Memory cards will be generated here -->
+            </div>
+        </div>
+
+        <!-- Puzzle Game Setup Screen -->
+        <div class="screen" id="puzzleSetupScreen" style="display: none;">
+            <div class="screen-header">
+                <button class="back-btn" id="backToMainFromPuzzle">
+                    <span>←</span>
+                </button>
+                <h2>🧩 Thiết lập game ghép hình</h2>
+            </div>
+
+            <div class="setup-content">
+                <div class="setup-section">
+                    <h3>🖼️ Hình ảnh</h3>
+                    <div class="puzzle-image-selector">
+                        <div class="puzzle-image-card" data-image="nature">
+                            <div class="image-preview">🏞️</div>
+                            <span>Thiên nhiên</span>
+                        </div>
+                        <div class="puzzle-image-card" data-image="animals">
+                            <div class="image-preview">🦁</div>
+                            <span>Động vật</span>
+                        </div>
+                        <div class="puzzle-image-card" data-image="space">
+                            <div class="image-preview">🚀</div>
+                            <span>Vũ trụ</span>
+                        </div>
+                        <div class="puzzle-image-card" data-image="cartoon">
+                            <div class="image-preview">🎭</div>
+                            <span>Hoạt hình</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setup-section">
+                    <h3>🔢 Số mảnh</h3>
+                    <div class="puzzle-pieces-selector">
+                        <div class="pieces-option" data-pieces="9">
+                            <span class="pieces-number">3×3</span>
+                            <small>9 mảnh - Dễ</small>
+                        </div>
+                        <div class="pieces-option" data-pieces="16">
+                            <span class="pieces-number">4×4</span>
+                            <small>16 mảnh - Vừa</small>
+                        </div>
+                        <div class="pieces-option" data-pieces="25">
+                            <span class="pieces-number">5×5</span>
+                            <small>25 mảnh - Khó</small>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-game-btn" id="startPuzzleBtn" disabled>
+                    <span class="btn-icon">🚀</span>
+                    Bắt đầu ghép hình
+                </button>
+            </div>
+        </div>
+
+        <!-- Puzzle Game Screen -->
+        <div class="screen" id="puzzleGameScreen" style="display: none;">
+            <div class="game-header">
+                <div class="game-info">
+                    <div class="score-display">
+                        <span class="label">Điểm</span>
+                        <span class="value" id="puzzleScore">0</span>
+                    </div>
+                    <div class="moves-display">
+                        <span class="label">Số nước đi</span>
+                        <span class="value" id="puzzleMoves">0</span>
+                    </div>
+                    <div class="progress-display">
+                        <span class="label">Hoàn thành</span>
+                        <span class="value" id="puzzleProgress">0%</span>
+                    </div>
+                </div>
+                <div class="timer-display">
+                    <span class="label">Thời gian</span>
+                    <span class="value" id="puzzleTimer">0:00</span>
+                </div>
+            </div>            <div class="puzzle-container">
+                <div class="puzzle-board" id="puzzleBoard">
+                    <!-- Puzzle pieces will be generated here -->
+                </div>
+                <div class="puzzle-preview" id="puzzlePreview">
+                    <h4>Hình mẫu</h4>
+                    <div class="preview-image" id="previewImage"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Typing Game Setup Screen -->
+        <div class="screen" id="typingSetupScreen" style="display: none;">
+            <div class="screen-header">
+                <button class="back-btn" id="backToMainFromTyping">
+                    <span>←</span>
+                </button>
+                <h2>⌨️ Thiết lập game đánh máy</h2>
+            </div>
+
+            <div class="setup-content">
+                <div class="setup-section">
+                    <h3>📝 Loại văn bản</h3>
+                    <div class="text-type-selector">
+                        <div class="text-type-card" data-type="words">
+                            <div class="type-icon">📖</div>
+                            <span>Từ vựng</span>
+                            <small>Luyện từ đơn</small>
+                        </div>
+                        <div class="text-type-card" data-type="sentences">
+                            <div class="type-icon">📝</div>
+                            <span>Câu văn</span>
+                            <small>Luyện câu hoàn chỉnh</small>
+                        </div>
+                        <div class="text-type-card" data-type="stories">
+                            <div class="type-icon">📚</div>
+                            <span>Đoạn văn</span>
+                            <small>Luyện đoạn dài</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setup-section">
+                    <h3>⚡ Mức độ</h3>
+                    <div class="typing-difficulty-selector">
+                        <div class="typing-difficulty-card" data-difficulty="beginner">
+                            <div class="difficulty-icon">🐌</div>
+                            <span>Người mới</span>
+                            <small>10-20 WPM</small>
+                        </div>
+                        <div class="typing-difficulty-card" data-difficulty="intermediate">
+                            <div class="difficulty-icon">🚶</div>
+                            <span>Trung bình</span>
+                            <small>20-40 WPM</small>
+                        </div>
+                        <div class="typing-difficulty-card" data-difficulty="advanced">
+                            <div class="difficulty-icon">🏃</div>
+                            <span>Cao cấp</span>
+                            <small>40+ WPM</small>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="start-game-btn" id="startTypingBtn" disabled>
+                    <span class="btn-icon">🚀</span>
+                    Bắt đầu luyện đánh máy
+                </button>
+            </div>
+        </div>
+
+        <!-- Typing Game Screen -->
+        <div class="screen" id="typingGameScreen" style="display: none;">
+            <div class="game-header">
+                <div class="game-info">
+                    <div class="score-display">
+                        <span class="label">WPM</span>
+                        <span class="value" id="typingWPM">0</span>
+                    </div>
+                    <div class="accuracy-display">
+                        <span class="label">Chính xác</span>
+                        <span class="value" id="typingAccuracy">100%</span>
+                    </div>
+                    <div class="progress-display">
+                        <span class="label">Tiến độ</span>
+                        <span class="value" id="typingProgress">0%</span>
+                    </div>
+                </div>
+                <div class="timer-display">
+                    <span class="label">Thời gian</span>
+                    <span class="value" id="typingTimer">0:00</span>
+                </div>
+            </div>
+
+            <div class="typing-container">
+                <div class="text-to-type" id="textToType">
+                    <!-- Text to type will be displayed here -->
+                </div>
+                <div class="typing-input-container">
+                    <textarea id="typingInput" placeholder="Bắt đầu gõ tại đây..." disabled></textarea>
+                </div>
+                <div class="typing-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Ký tự đã gõ:</span>
+                        <span class="stat-value" id="charactersTyped">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Lỗi:</span>
+                        <span class="stat-value" id="errorsCount">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div class="screen" id="settingsScreen" style="display: none;">
+            <div class="screen-header">
+                <button class="back-btn" id="backToMainFromSettings">
+                    <span>←</span>
+                </button>
+                <h2>⚙️ Cài đặt</h2>
+            </div>
+
+            <div class="settings-content">
+                <div class="setting-group">
+                    <h3>🔊 Âm thanh</h3>
+                    <div class="setting-item">
+                        <label>Hiệu ứng âm thanh</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="soundEffectsToggle" checked>
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label>Nhạc nền</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="backgroundMusicToggle" checked>
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label>Âm lượng</label>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="70" class="volume-slider">
+                        <span class="volume-value">70%</span>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>🎮 Gameplay</h3>
+                    <div class="setting-item">
+                        <label>Hiển thị gợi ý phím tắt</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="keyboardHintsToggle" checked>
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label>Rung động (mobile)</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="vibrationToggle" checked>
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>📊 Dữ liệu</h3>
+                    <button class="danger-btn" id="resetProgressBtn">
+                        <span class="btn-icon">🗑️</span>
+                        Xóa tiến độ
+                    </button>
+                    <button class="secondary-btn" id="exportDataBtn">
+                        <span class="btn-icon">📤</span>
+                        Xuất dữ liệu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div class="notification-container" id="notificationContainer"></div>    <!-- Confetti Canvas -->
+    <canvas id="confettiCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000;"></canvas>
+
+    <script src="sound-manager.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

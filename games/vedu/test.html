@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Educational Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { padding: 10px; margin: 5px 0; border-radius: 5px; }
+        .pass { background-color: #d4edda; color: #155724; }
+        .fail { background-color: #f8d7da; color: #721c24; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Educational Game Test Page</h1>
+    <p>This page tests if the educational game classes are properly implemented.</p>
+    
+    <div id="testResults"></div>
+    
+    <button onclick="runTests()">Run Tests</button>
+    <button onclick="openMainGame()">Open Main Game</button>
+    
+    <script>
+        function runTests() {
+            const results = document.getElementById('testResults');
+            results.innerHTML = '<h2>Test Results:</h2>';
+            
+            const tests = [
+                {
+                    name: 'GameState Class',
+                    test: () => {
+                        try {
+                            const gameState = new GameState();
+                            return gameState && typeof gameState.reset === 'function';
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                },
+                {
+                    name: 'QuestionDatabase Class',
+                    test: () => {
+                        try {
+                            const db = new QuestionDatabase();
+                            return db && typeof db.getQuestions === 'function';
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                },
+                {
+                    name: 'EducationalGame Class',
+                    test: () => {
+                        try {
+                            // Don't actually initialize to avoid DOM conflicts
+                            return typeof EducationalGame === 'function';
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                },
+                {
+                    name: 'MemoryGame Class',
+                    test: () => {
+                        try {
+                            return typeof MemoryGame === 'function';
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                },
+                {
+                    name: 'PuzzleGame Class',
+                    test: () => {
+                        try {
+                            return typeof PuzzleGame === 'function';
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                },
+                {
+                    name: 'TypingGame Class',
+                    test: () => {
+                        try {
+                            return typeof TypingGame === 'function';
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                }
+            ];
+            
+            tests.forEach(test => {
+                const result = test.test();
+                const div = document.createElement('div');
+                div.className = `test-result ${result ? 'pass' : 'fail'}`;
+                div.textContent = `${test.name}: ${result ? 'PASS ✓' : 'FAIL ✗'}`;
+                results.appendChild(div);
+            });
+        }
+        
+        function openMainGame() {
+            window.open('./index.html', '_blank');
+        }
+    </script>
+      <!-- Include the main script to test classes -->
+    <script src="script.js"></script>
+    <!-- Include the test suite -->
+    <script src="test-suite.js"></script>
+    
+    <div id="advanced-tests" style="margin-top: 20px;">
+        <h2>Advanced Testing</h2>
+        <button onclick="window.testEducationalGame()">Run Complete Test Suite</button>
+        <p><em>Check browser console for detailed test results</em></p>
+    </div>
+</body>
+</html>
