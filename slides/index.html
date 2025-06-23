@@ -1,0 +1,2423 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương Trình Đào Tạo: Ứng Dụng AI Trong Phát Triển Phần Mềm</title>
+    <style>
+        /* --- General Styling & Fonts --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #50E3C2;
+            --text-color: #333;
+            --bg-color: #f4f7f9;
+            --slide-bg: #ffffff;
+            --header-bg: #2c3e50;
+            --header-text: #ffffff;
+        }        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: var(--text-color);
+            overflow: hidden;
+        }
+          /* --- Presentation Container (Full Screen) --- */
+        #presentation-container {
+            width: 100vw;
+            height: 100vh;
+            background: var(--slide-bg);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Slide Structure --- */
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease-in-out, visibility 0.6s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 1;
+        }        .slide-header {
+            padding: 15px 30px;
+            background-color: rgba(44, 62, 80, 0.05); /* Lighter header bg */
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            flex-shrink: 0; /* Không cho phép co lại */
+        }
+
+        .slide-header h2 {
+            margin: 0;
+            font-size: 2rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }        .slide-body {
+            flex-grow: 1;
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 150px); /* Trừ đi header và controls */
+        }        .slide-body .columns {
+            display: flex;
+            gap: 1.5rem;
+            width: 100%;
+            flex-grow: 1;
+            align-items: flex-start;
+        }
+
+        .slide-body .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }/* --- Content Styling --- */
+        h1, h3, h4 {
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+          h1 { font-size: 2.5rem; color: var(--primary-color); text-align: center; }
+        h3 { font-size: 1.3rem; color: var(--text-color); margin-bottom: 1rem; }
+        h4 { font-size: 1.1rem; color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 3px; margin-bottom: 0.6rem;}
+
+        p, li {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 0.4rem;
+        }
+        
+        ul { padding-left: 20px; margin: 0; }
+        
+        .center-content {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .splash-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            z-index: -1;
+            opacity: 0.1;
+        }        .content-image {
+            max-width: 100%;
+            max-height: 25vh;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            object-fit: contain;
+            align-self: center;
+        }        .example-prompt {
+            background-color: #eef5fd;
+            border-left: 4px solid var(--primary-color);
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.75rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 180px;
+            overflow-y: auto;
+            line-height: 1.3;
+        }/* --- Navigation Controls --- */
+        #controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            gap: 30px;
+        }
+
+        #controls button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        #controls button:hover {
+            background-color: #3a7ac8;
+            transform: translateY(-2px);
+        }
+        
+        #slide-counter {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+          /* --- D3.js Specific Styling --- */        .d3-container {
+            width: 100%;
+            height: 100%;
+            min-height: 20vh;
+            max-height: 25vh;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #fdfdfd 0%, #f8f9fa 100%);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Demo container styles for better scrolling */
+        .demo-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }        .demo-output {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            text-align: left;
+            background: #1e1e1e;
+            color: #e6e6e6;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #4a90e2;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+            line-height: 1.3;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            max-height: 250px;
+            min-height: 120px;
+            flex-grow: 1;
+            margin-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #4a90e2 #2a2a2a;
+        }
+
+        .demo-output::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .demo-output::-webkit-scrollbar-track {
+            background: #2a2a2a;
+            border-radius: 4px;
+        }
+
+        .demo-output::-webkit-scrollbar-thumb {
+            background: #4a90e2;
+            border-radius: 4px;
+        }
+
+        .demo-output::-webkit-scrollbar-thumb:hover {
+            background: #3a7ac8;
+        }
+
+        .demo-button-container {
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .node:hover {
+            transform: scale(1.1);
+        }
+
+        .node circle {
+            stroke: var(--primary-color);
+            stroke-width: 2px;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+        }        .node text {
+            font-size: 12px !important;
+            font-family: 'Inter', sans-serif;
+            pointer-events: none;
+            font-weight: 600;
+        }
+
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+            stroke-dasharray: 5,5;
+            animation: dash 20s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -200;
+            }
+        }
+
+        /* --- Animation Classes --- */
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* --- Enhanced Visual Elements --- */        .icon-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4em;
+            margin-bottom: 0.3em;
+            font-size: 0.85rem;
+        }
+
+        .icon-text::before {
+            content: "🎯";
+            font-size: 1.2em;
+        }
+
+        .ai-feature::before { content: "🤖"; }
+        .speed-feature::before { content: "⚡"; }
+        .quality-feature::before { content: "✨"; }
+        .automation-feature::before { content: "🔄"; }
+
+        /* --- Progress Indicators --- */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1em 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            width: 0%;
+            transition: width 2s ease-in-out;
+            animation: progressFill 3s ease-in-out;
+        }
+
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: 85%; }
+        }        /* --- Card Hover Effects --- */        .feature-card {
+            background: white;
+            padding: 0.8rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 0.6rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }        /* --- Full Screen Responsive --- */
+        @media (max-width: 1200px) {
+            .slide-body {
+                padding: 1.2rem 1.5rem;
+                gap: 0.8rem;
+            }
+            
+            .slide-body .columns {
+                gap: 1.2rem;
+            }
+            
+            h1 { font-size: 2.2rem; }
+            h3 { font-size: 1.2rem; }
+            h4 { font-size: 1rem; }
+            p, li { font-size: 0.85rem; }
+            
+            .content-image {
+                max-height: 22vh;
+            }
+            
+            .d3-container {
+                min-height: 18vh;
+                max-height: 23vh;
+            }
+            
+            .demo-output {
+                max-height: 220px;
+                min-height: 100px;
+                font-size: 10px;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .slide-body {
+                padding: 1rem 1.2rem;
+                gap: 0.6rem;
+            }
+            
+            .slide-body .columns {
+                gap: 1rem;
+            }
+            
+            h1 { font-size: 2rem; }
+            h3 { font-size: 1.1rem; }
+            h4 { font-size: 0.95rem; }
+            p, li { font-size: 0.8rem; }
+            
+            .content-image {
+                max-height: 20vh;
+            }
+            
+            .d3-container {
+                min-height: 16vh;
+                max-height: 20vh;
+            }
+            
+            .demo-output {
+                max-height: 180px;
+                min-height: 90px;
+                font-size: 9px;
+            }
+            
+            .feature-card {
+                padding: 0.6rem;
+                margin-bottom: 0.4rem;
+            }
+            
+            .icon-text {
+                font-size: 0.8rem;
+            }
+        }        @media (max-width: 768px) {
+            .slide-body {
+                padding: 0.8rem;
+                gap: 0.5rem;
+            }
+            
+            .slide-body .columns {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .slide-header {
+                padding: 12px 20px;
+            }
+            
+            .slide-header h2 {
+                font-size: 1.3rem;
+            }
+            
+            h1 { font-size: 1.8rem; }
+            h3 { font-size: 1rem; }
+            h4 { font-size: 0.9rem; }
+            p, li { font-size: 0.75rem; }
+            
+            .content-image {
+                max-height: 18vh;
+            }
+            
+            .d3-container {
+                min-height: 14vh;
+                max-height: 18vh;
+            }
+            
+            .demo-output {
+                max-height: 150px;
+                min-height: 80px;
+                font-size: 8px;
+                padding: 10px;
+            }
+            
+            .feature-card {
+                padding: 0.5rem;
+                margin-bottom: 0.3rem;
+            }
+            
+            .icon-text {
+                font-size: 0.75rem;
+                gap: 0.3em;
+            }
+            
+            .example-prompt {
+                font-size: 0.7rem;
+                padding: 0.6rem;
+                max-height: 140px;
+            }
+            
+            #controls {
+                padding: 10px 20px;
+                gap: 15px;
+            }
+            
+            #controls button {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+        }
+            h4 { font-size: 1rem; }
+            p, li { font-size: 0.85rem; }
+            
+            .feature-card {
+                padding: 0.8rem;
+                margin-bottom: 0.6rem;
+            }
+            
+            .content-image {
+                max-height: 20vh;
+            }
+            
+            .d3-container {
+                min-height: 25vh;
+                max-height: 40vh;
+            }
+              .demo-output {
+                max-height: 300px;
+                min-height: 100px;
+                font-size: 11px;
+                padding: 15px;
+            }
+            
+            .demo-container {
+                padding: 15px;
+            }
+            
+            .example-prompt {
+                font-size: 0.75rem;
+                padding: 0.8rem;
+                max-height: 150px;
+            }            
+            #controls {
+                padding: 10px 20px;
+                gap: 15px;
+            }
+            
+            #controls button {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .slide-body {
+                padding: 1rem;
+                gap: 0.5rem;
+            }
+            
+            h1 { font-size: 2rem; }
+            h3 { font-size: 1rem; }
+            h4 { font-size: 0.9rem; }
+            p, li { font-size: 0.8rem; }
+            
+            .feature-card {
+                padding: 0.6rem;
+                margin-bottom: 0.4rem;
+            }
+            
+            .content-image {
+                max-height: 15vh;
+            }
+              .d3-container {
+                min-height: 12vh;
+                max-height: 16vh;
+            }
+            
+            .demo-output {
+                max-height: 120px;
+                min-height: 60px;
+                font-size: 8px;
+                padding: 8px;
+            }
+            
+            .demo-container {
+                padding: 8px;
+            }
+        }
+
+        /* --- Ensure no overflow --- */
+        .slide {
+            box-sizing: border-box;
+        }
+        
+        .slide-body .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            overflow: hidden;
+        }/* --- Fullscreen API Support --- */
+        .fullscreen-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(74, 144, 226, 0.9);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }.fullscreen-button:hover {
+            background: rgba(74, 144, 226, 1);
+            transform: scale(1.1);
+        }
+
+        /* --- Interactive Elements --- */
+        .interactive-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .interactive-demo:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+
+        .demo-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .demo-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .demo-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* --- Code Syntax Highlighting --- */
+        .code-demo {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        .code-demo .keyword { color: #569cd6; }
+        .code-demo .string { color: #ce9178; }
+        .code-demo .comment { color: #6a9955; }
+        .code-demo .number { color: #b5cea8; }
+        .code-demo .function { color: #dcdcaa; }
+
+        /* --- Particles.js Container --- */
+        #particles-js {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* --- Typing Effect Styles --- */
+        .typed-cursor {
+            color: #4A90E2;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="presentation-container">        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div id="particles-js" style="position: absolute; width: 100%; height: 100%; z-index: 0;"></div>            <div class="slide-body center-content fade-in" style="position: relative; z-index: 1;">
+                <h1 style="font-size: 3.5rem; color: #2c3e50; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">🚀 CHƯƠNG TRÌNH ĐÀO TẠO</h1>
+                <h3 style="font-size: 2rem; color: #34495e; margin: 1em 0;">🤖 Ứng Dụng AI Trong Phát Triển Phần Mềm</h3>
+                <p style="font-size: 1.3rem; color: #34495e; background: rgba(255,255,255,0.9); padding: 0.5em 1em; border-radius: 8px;">✨ Nâng cao hiệu suất cho Business Analyst, Developer và QC</p>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div style="margin-top: 1.5rem;">
+                    <div id="typing-intro" style="font-size: 1.2rem; color: #4A90E2; min-height: 40px;"></div>
+                </div>
+            </div>
+        </div><!-- Slide 2: Agenda -->
+        <div class="slide">
+            <div class="slide-header"><h2>📋 Nội dung buổi học</h2></div>
+            <div class="slide-body">
+                <h3>🎯 NỘI DUNG CHÍNH</h3>
+                <div class="feature-card">
+                    <div class="icon-text ai-feature"><strong>Module 1: AI dành cho Business Analyst (BA)</strong></div>
+                    <em>Tối ưu hóa việc phân tích và tạo tài liệu yêu cầu.</em>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-text speed-feature"><strong>Module 2: AI dành cho Developer (Dev)</strong></div>
+                    <em>Tăng tốc lập trình, cải thiện chất lượng code.</em>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-text quality-feature"><strong>Module 3: AI dành cho Quality Control (QC)</strong></div>
+                    <em>Tự động hóa việc tạo và phân tích kiểm thử.</em>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-text automation-feature"><strong>Tổng kết & Hỏi đáp</strong></div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop" class="content-image pulse" alt="Hình ảnh roadmap công nghệ">
+            </div>
+        </div>        <!-- Slide 3: Module 1 Intro -->
+        <div class="slide">
+            <div class="slide-header"><h2>🤖 Module 1: AI dành cho Business Analyst</h2></div>
+            <div class="slide-body">
+                <div class="columns">
+                    <div class="column">
+                        <h3>🎯 AI dành cho Business Analyst</h3>
+                        <p>Sử dụng AI để tinh gọn quy trình thu thập yêu cầu, tạo tài liệu và phác thảo ý tưởng.</p>
+                        <h4>📝 Công việc chính của BA:</h4>
+                        <div class="feature-card">
+                            <div class="icon-text">📊 Thu thập & phân tích yêu cầu</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">📋 Viết tài liệu BRD, PRD, User Stories</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">🎨 Vẽ wireframe, mockup</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">💬 Giao tiếp & tổng hợp thông tin</div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h4>✨ AI sẽ giúp bạn:</h4>
+                        <div class="feature-card ai-feature">
+                            <strong>⚡ Nhanh chóng</strong> phác thảo ý tưởng ban đầu.
+                        </div>
+                        <div class="feature-card speed-feature">
+                            <strong>🗂️ Hệ thống hóa</strong> thông tin một cách logic.
+                        </div>
+                        <div class="feature-card quality-feature">
+                            <strong>⏰ Tiết kiệm thời gian</strong> cho các công việc lặp đi lặp lại.
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2070&auto=format&fit=crop" class="content-image pulse" alt="BA làm việc với AI">
+                    </div>
+                </div>
+            </div>
+        </div>
+          <!-- Slide 4: BA - User Stories -->
+        <div class="slide" data-init-d3="createUserStoryViz">
+            <div class="slide-header"><h2>🤖 Module 1: AI cho BA</h2></div>
+            <div class="slide-body">
+                <h3>📝 Tạo User Stories với ChatGPT / Claude</h3>
+                <div class="columns">
+                    <div class="column">
+                        <h4>🔧 Cách sử dụng:</h4>
+                        <div class="feature-card">
+                            <div class="icon-text">1️⃣ <strong>Cung cấp bối cảnh:</strong> Mô tả dự án, tính năng.</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">2️⃣ <strong>Xác định Persona:</strong> Người dùng cuối là ai?</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">3️⃣ <strong>Yêu cầu rõ ràng:</strong> Đưa ra prompt cụ thể.</div>
+                        </div>
+                        <h4>💡 Ví dụ thực tế - App Giao đồ ăn:</h4>
+                        <div class="example-prompt">
+<strong>Input:</strong> "Tôi đang làm app giao đồ ăn như Grab Food. Hãy tạo 5 user stories cho tính năng 'Đặt món và thanh toán' với persona là 'Sinh viên bận rộn, 20-25 tuổi, thích tiện lợi'"
+
+<strong>AI Output:</strong>
+🎯 "Là sinh viên bận rộn, tôi muốn tìm kiếm món ăn theo khoảng cách để tiết kiệm thời gian chờ đợi"
+💳 "Là sinh viên, tôi muốn lưu nhiều phương thức thanh toán để không phải nhập lại mỗi lần đặt"
+⏰ "Là người dùng thường xuyên, tôi muốn đặt lại món đã order trước đó để tiết kiệm thời gian"</div>
+                    </div>
+                    <div class="column">                        <h4>🎬 Mô phỏng: AI tạo User Stories</h4>
+                        <div id="user-story-viz" class="d3-container">
+                            <div class="demo-container">
+                                <div id="typing-demo" class="demo-output"></div>
+                                <div class="demo-button-container">
+                                    <button id="start-typing" style="background: linear-gradient(135deg, #4A90E2, #50E3C2); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(74, 144, 226, 0.4)'" onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='0 4px 15px rgba(74, 144, 226, 0.3)'">
+                                        ⚡ Bắt đầu Demo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- Slide 5: BA - BRD/PRD -->
+        <div class="slide">
+            <div class="slide-header"><h2>🤖 Module 1: AI cho BA</h2></div>
+            <div class="slide-body">                <h3>📄 Sinh dàn ý BRD/PRD với Microsoft Copilot / Notion AI / ChatGPT</h3>
+                 <div class="columns">
+                    <div class="column">
+                        <h4>🔧 Cách sử dụng:</h4>
+                        <div class="feature-card">
+                            <div class="icon-text">1️⃣ Bắt đầu với yêu cầu tổng quan về tính năng.</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">2️⃣ Yêu cầu AI tạo một dàn ý (outline) cho tài liệu.</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">3️⃣ Yêu cầu AI điền chi tiết cho từng mục.</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">4️⃣ BA kiểm tra, hiệu chỉnh và bổ sung.</div>
+                        </div>
+                        
+                        <h4>🆕 Top AI Tools 2025:</h4>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #0078d4 0%, #1ba1e2 100%); color: white;">
+                            <div class="icon-text">🏢 Microsoft Copilot Studio - Enterprise ready</div>
+                        </div>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); color: white;">
+                            <div class="icon-text">📝 Notion AI - Collaborative documents</div>
+                        </div>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #00b894 0%, #00a085 100%); color: white;">
+                            <div class="icon-text">⚡ Claude 3.5 Sonnet - Best for long docs</div>
+                        </div>
+                        
+                        <h4>💡 Ví dụ Prompt:</h4>
+                        <div class="example-prompt">Tạo dàn ý chi tiết cho PRD của tính năng "Giỏ hàng e-commerce", bao gồm: 
+1. Executive Summary
+2. Feature Requirements (Functional)
+3. Non-Functional Requirements
+4. User Acceptance Criteria
+5. Technical Specifications
+6. Risk Assessment
+
+Dự án: App bán hàng online cho thị trường Việt Nam, target 100k users.</div>
+                    </div>
+                    <div class="column">
+                       <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=2070&auto=format&fit=crop" class="content-image pulse" alt="Người đang làm việc với AI trên laptop">
+                       <div style="text-align: center; margin-top: 1em;">
+                           <div class="feature-card pulse" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center;">
+                               <div class="icon-text">📊 AI tiết kiệm 70% thời gian viết docs</div>
+                           </div>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- Slide 6: BA - Wireframe -->
+        <div class="slide">
+            <div class="slide-header"><h2>🤖 Module 1: AI cho BA</h2></div>
+            <div class="slide-body">                 <h3>🎨 Phác thảo Wireframe với Figma AI & No-Code Tools</h3>
+                 <div class="columns">
+                    <div class="column">
+                        <h4>🆕 Top AI Wireframe Tools 2025:</h4>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #f24e1e 0%, #a259ff 100%); color: white;">
+                            <strong>🎨 Figma AI (Beta)</strong><br>
+                            Tích hợp sẵn trong Figma, tạo wireframe từ text description.
+                        </div>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #00d4ff 0%, #5b73f0 100%); color: white;">
+                            <strong>� Uizard</strong><br>
+                            Chuyển sketch tay thành digital wireframe chỉ trong 30 giây.
+                        </div>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%); color: white;">
+                            <strong>🤖 Galileo AI</strong><br>
+                            Tạo UI hoàn chỉnh từ natural language prompts.
+                        </div>
+                        
+                        <h4>🛠️ Workflow thực tế:</h4>
+                        <div class="feature-card">
+                            <div class="icon-text">1️⃣ <strong>Mô tả chi tiết:</strong> "Trang đăng nhập cho app mobile banking"</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">2️⃣ <strong>AI generate:</strong> Layout + Components + Annotations</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">3️⃣ <strong>BA refine:</strong> Adjust theo business requirements</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">4️⃣ <strong>Export:</strong> Dev-ready specs & assets</div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h4>💡 Demo Prompt:</h4>
+                        <div class="example-prompt">Create a mobile wireframe for a food delivery app checkout page. Include:
+- Order summary section
+- Delivery address input
+- Payment method selection (card, cash, e-wallet)
+- Promo code field
+- Total calculation
+- Place order button
+
+Style: Clean, minimal, iOS-friendly layout</div>
+                        
+                        <div style="text-align: center; margin-top: 1em;">
+                            <div class="feature-card pulse" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center;">
+                                <div class="icon-text">⚡ From idea to wireframe in 60 seconds!</div>
+                            </div>
+                        </div>
+                        
+                        <img src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?q=80&w=2070&auto=format&fit=crop" class="content-image pulse" alt="AI generating wireframes" style="max-height: 200px;">
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- Slide 7: Dev Module Intro -->
+        <div class="slide">
+            <div class="slide-header"><h2>💻 Module 2: AI dành cho Developer</h2></div>
+            <div class="slide-body">
+                <div class="columns">
+                    <div class="column">
+                        <h3>⚡ AI dành cho Developer</h3>
+                        <p>Sử dụng AI để tăng tốc độ viết code, tự động hóa tác vụ và hỗ trợ thiết kế hệ thống.</p>
+                        <h4>🔧 Công việc chính của Dev:</h4>
+                        <div class="feature-card">
+                            <div class="icon-text">🏗️ Thiết kế kiến trúc, DB</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">💻 Viết code, unit test</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">🔄 Refactor, tối ưu code</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">🚀 DevOps, CI/CD</div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h4>🎯 AI sẽ giúp bạn:</h4>
+                        <div class="feature-card speed-feature">
+                            <strong>⚡ Viết code nhanh hơn</strong> với gợi ý thông minh.
+                        </div>
+                        <div class="feature-card quality-feature">
+                            <strong>🛡️ Giảm lỗi</strong> bằng cách sinh unit test tự động.
+                        </div>
+                        <div class="feature-card ai-feature">
+                            <strong>🔍 Khám phá giải pháp</strong> kiến trúc mới.
+                        </div>
+                        <div class="feature-card automation-feature">
+                            <strong>🤖 Tự động hóa</strong> quy trình CI/CD.
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=2069&auto=format&fit=crop" class="content-image pulse" alt="Developer làm việc với AI">
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- Slide 8: Dev - Code Completion -->
+        <div class="slide" data-init-d3="createCodeDemo">
+            <div class="slide-header"><h2>💻 Module 2: AI cho Dev</h2></div>
+            <div class="slide-body">
+                <h3>🤖 Gợi ý & Hoàn thiện Code với GitHub Copilot</h3>
+                <p>GitHub Copilot là trợ lý AI tích hợp vào IDE, phân tích ngữ cảnh (code và comment) để đưa ra gợi ý code chính xác.</p>
+                <div class="columns">
+                    <div class="column">
+                        <h4>⚙️ Demo thực tế:</h4>
+                        <div class="feature-card">
+                            <div class="icon-text">1️⃣ <strong>Input:</strong> Comment mô tả function</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">2️⃣ <strong>Copilot:</strong> Suggest toàn bộ implementation</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">3️⃣ <strong>Dev:</strong> Tab để accept hoặc chỉnh sửa</div>
+                        </div>
+                        
+                        <h4 style="margin-top: 1.5rem;">📈 Kết quả thực tế:</h4>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #24292e 0%, #40c463 100%); color: white; text-align: center;">
+                            <div class="icon-text">⚡ 46% faster completion (GitHub Study)</div>
+                        </div>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #0366d6 0%, #0256d0 100%); color: white; text-align: center;">
+                            <div class="icon-text">✅ 88% developer satisfaction</div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h4>🎬 Live Code Demo</h4>
+                        <div id="code-demo" class="d3-container" style="background: #1e1e1e; color: #fff; padding: 20px; font-family: 'Courier New', monospace;">
+                            <div style="color: #6A9955;">// Viết comment mô tả function cần tạo</div>
+                            <div style="color: #9CDCFE;">function <span style="color: #DCDCAA;">calculateShippingFee</span>(distance, weight) {</div>
+                            <div id="code-suggestion" style="margin-left: 20px; color: #808080; border-left: 2px solid #4A90E2; padding-left: 10px;">
+                                <div>// 🤖 Copilot suggestion...</div>
+                            </div>
+                            <div style="color: #9CDCFE;">}</div>
+                            <div style="margin-top: 20px; text-align: center;">
+                                <button id="generate-code" style="background: #40c463; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                                    🚀 Generate Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- Slide 9: Dev - Unit Test -->
+        <div class="slide" data-init-d3="createUnitTestViz">
+            <div class="slide-header"><h2>💻 Module 2: AI cho Dev</h2></div>
+            <div class="slide-body">
+                <h3>🧪 Sinh Unit Test với ChatGPT / GitHub Copilot</h3>
+                <div class="columns">
+                    <div class="column">
+                        <h4>🔧 Cách sử dụng:</h4>
+                        <div class="feature-card">
+                            <div class="icon-text">1️⃣ <strong>Input:</strong> Function cần test</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">2️⃣ <strong>AI:</strong> Phân tích logic và edge cases</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">3️⃣ <strong>Output:</strong> Complete test suite</div>
+                        </div>
+                        
+                        <h4>💡 Ví dụ thực tế - Password Validator:</h4>
+                        <div class="example-prompt">
+<strong>Input:</strong> "Hãy viết unit test bằng Jest cho hàm JavaScript sau. Cần bao gồm test case cho mật khẩu hợp lệ, mật khẩu quá ngắn, và mật khẩu thiếu chữ số."
+
+<strong>Function:</strong> isPasswordStrong(password)
+
+<strong>AI Output:</strong>
+✅ Test case: Valid password
+❌ Test case: Too short  
+❌ Test case: Missing digits</div>
+                    </div>
+                    <div class="column">                        <h4>🎬 Live Demo: AI Test Generator</h4>
+                        <div id="unit-test-viz" class="d3-container">
+                            <div class="demo-container">
+                                <div id="unit-test-demo" class="demo-output"></div>
+                                <div class="demo-button-container">
+                                    <button id="start-unit-test" style="background: linear-gradient(135deg, #4A90E2, #50E3C2); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(74, 144, 226, 0.4)'" onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='0 4px 15px rgba(74, 144, 226, 0.3)'">
+                                        🧪 Bắt đầu Demo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- Slide 10: Dev - Architecture -->
+        <div class="slide" data-init-d3="createArchitectureViz">
+            <div class="slide-header"><h2>💻 Module 2: AI cho Dev</h2></div>
+            <div class="slide-body">
+                <h3>🏗️ Thiết kế Kiến trúc Hệ thống với ChatGPT / Gemini</h3>
+                <div class="columns">
+                    <div class="column">
+                        <h4>🔧 Cách sử dụng:</h4>
+                        <div class="feature-card">
+                            <div class="icon-text">1️⃣ <strong>Mô tả yêu cầu:</strong> Domain và scale hệ thống</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">2️⃣ <strong>AI phân tích:</strong> Chia microservices hợp lý</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">3️⃣ <strong>Output:</strong> Sơ đồ kiến trúc chi tiết</div>
+                        </div>
+                        
+                        <h4>💡 Ví dụ thực tế - Food Delivery App:</h4>
+                        <div class="example-prompt">
+<strong>Input:</strong> "Thiết kế kiến trúc microservices cho ứng dụng 'Đặt đồ ăn' gồm các service: User, Restaurant, Order, Payment. Đề xuất DB cho mỗi service và vẽ sơ đồ bằng Mermaid syntax."
+
+<strong>AI Output:</strong>
+🏗️ API Gateway → 4 Services
+📊 MongoDB cho User, PostgreSQL cho Order
+🔄 Event-driven communication</div>
+                    </div>
+                    <div class="column">                        <h4>🎬 Live Demo: Architecture Generator</h4>
+                        <div id="architecture-viz" class="d3-container">
+                            <div class="demo-container">
+                                <div id="architecture-demo" class="demo-output"></div>
+                                <div class="demo-button-container">
+                                    <button id="start-architecture" style="background: linear-gradient(135deg, #4A90E2, #50E3C2); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(74, 144, 226, 0.4)'" onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='0 4px 15px rgba(74, 144, 226, 0.3)'">
+                                        🏗️ Bắt đầu Demo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+          <!-- Slide 11: QC Module Intro -->
+        <div class="slide">
+            <div class="slide-header"><h2>🔍 Module 3: AI dành cho Quality Control</h2></div>
+            <div class="slide-body">
+                <div class="columns">
+                    <div class="column">
+                        <h3>🛡️ AI dành cho Quality Control</h3>
+                        <p>Sử dụng AI để tăng tốc việc tạo kịch bản kiểm thử, phát hiện lỗi sớm và phân tích kết quả hiệu quả hơn.</p>
+                        <h4>🔧 Công việc chính của QC:</h4>
+                        <div class="feature-card">
+                            <div class="icon-text">📝 Viết test case (UI/API)</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">🤖 Viết automation test script</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">📊 Thực thi & phân tích kết quả</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">🎯 Kiểm thử đặc thù (Visual, Performance...)</div>
+                        </div>
+                    </div>
+                    <div class="column">
+                         <h4>✨ AI sẽ giúp bạn:</h4>
+                        <div class="feature-card quality-feature">
+                            <strong>📈 Bao phủ nhiều trường hợp</strong> kiểm thử hơn.
+                        </div>
+                        <div class="feature-card ai-feature">
+                            <strong>📋 Tạo test case chi tiết</strong> từ yêu cầu.
+                        </div>
+                        <div class="feature-card speed-feature">
+                            <strong>🔍 Nhanh chóng xác định</strong> nguyên nhân lỗi từ logs.
+                        </div>
+                        <div class="feature-card automation-feature">
+                            <strong>⚡ Tự động hóa</strong> kịch bản kiểm thử.
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop" class="content-image pulse" alt="QC engineer testing with AI">
+                    </div>
+                </div>
+            </div>
+        </div>
+          <!-- Slide 12: QC - Test Case Gen -->
+        <div class="slide" data-init-d3="createTestCaseGenViz">
+            <div class="slide-header"><h2">🔍 Module 3: AI cho QC</h2></div>
+            <div class="slide-body">
+                <h3>📋 Sinh Test Case chi tiết với ChatGPT / Claude</h3>
+                <div class="columns">
+                    <div class="column">
+                        <h4>🔧 Cách sử dụng:</h4>
+                        <div class="feature-card">
+                            <div class="icon-text">1️⃣ <strong>Input:</strong> User Story hoặc Feature</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">2️⃣ <strong>AI phân tích:</strong> Identify test scenarios</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="icon-text">3️⃣ <strong>Output:</strong> Complete test case table</div>
+                        </div>
+                        
+                        <h4>💡 Ví dụ thực tế - Price Filter:</h4>
+                        <div class="example-prompt">
+<strong>Input:</strong> "Từ user story: 'Là người dùng, tôi muốn lọc sản phẩm theo khoảng giá từ X đến Y', hãy tạo bảng test case chi tiết. Bao gồm trường hợp: lọc thành công, giá min > max, nhập chữ vào ô giá."
+
+<strong>AI Output:</strong>
+✅ TC1: Valid price range (100k-500k)
+❌ TC2: Min > Max (500k-100k)  
+❌ TC3: Invalid input (text)
+❌ TC4: Negative values
+❌ TC5: Empty fields</div>
+                    </div>
+                    <div class="column">                        <h4>🎬 Live Demo: Test Case Generator</h4>
+                        <div id="test-case-gen-viz" class="d3-container">
+                            <div class="demo-container">
+                                <div id="test-case-demo" class="demo-output"></div>
+                                <div class="demo-button-container">
+                                    <button id="start-test-case" style="background: linear-gradient(135deg, #4A90E2, #50E3C2); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(74, 144, 226, 0.4)'" onmouseout="this.style.transform='translateY(0px)'; this.style.boxShadow='0 4px 15px rgba(74, 144, 226, 0.3)'">
+                                        📋 Bắt đầu Demo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- Slide 13: QC - Log Analysis -->
+        <div class="slide" data-init-d3="createLogAnalysisDemo">
+            <div class="slide-header"><h2>🔍 Module 3: AI cho QC</h2></div>
+            <div class="slide-body">
+                <h3>🔧 Phân tích Log & Phân loại Lỗi với ChatGPT</h3>
+                <div class="columns">
+                    <div class="column">
+                        <p>AI có khả năng đọc và hiểu các đoạn log lỗi (stack traces) phức tạp, giúp QC nhanh chóng xác định khu vực và nguyên nhân tiềm năng của lỗi.</p>
+                         <h4>💡 Ví dụ thực tế:</h4>
+                        <div class="example-prompt" style="background: #1e1e1e; color: #fff; font-family: 'Courier New', monospace;">
+<span style="color: #ff6b6b;">ERROR</span> <span style="color: #4ecdc4;">2025-06-17 14:30:25</span> [<span style="color: #ffe66d;">main</span>] 
+<span style="color: #ff6b6b;">NullPointerException</span> at UserService.java:45
+<span style="color: #95e1d3;">→ AI phân tích:</span> "Lỗi do biến user chưa được khởi tạo 
+trong method getUserProfile(). Kiểm tra logic 
+validation ở dòng 42-44."</div>
+                        <div style="margin-top: 1em;">
+                            <div class="feature-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%); color: white; text-align: center;">
+                                <div class="icon-text">⚡ Tiết kiệm 70% thời gian debug</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div id="log-analysis-demo" class="d3-container" style="background: #1e1e1e; color: white; padding: 20px;">
+                            <div style="text-align: center;">
+                                <h4 style="color: #4ecdc4; margin: 0;">🤖 AI Log Analyzer</h4>
+                                <div id="log-stream" style="margin-top: 20px; height: 200px; overflow-y: auto;"></div>
+                                <div style="margin-top: 20px;">
+                                    <button id="analyze-btn" style="background: #4ecdc4; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                                        🔍 Phân tích Log
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 1em;">
+                            <div class="feature-card">
+                                <div class="icon-text">🎯 AI hiểu stack trace phức tạp</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+          <!-- Slide 14: QC - Advanced Tools -->
+        <div class="slide">
+            <div class="slide-header"><h2>🔍 Module 3: AI cho QC</h2></div>
+            <div class="slide-body">                <h3>🚀 Các Công Cụ AI Tiên Tiến cho QC (2025)</h3>
+                <div class="columns">
+                    <div class="column">
+                        <h4>🆕 Top AI Testing Platforms:</h4>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                            <h4>� Playwright AI</h4>
+                            <p>Tự động tạo test scripts từ user interactions. Record một lần, AI sẽ tự maintain locators khi UI thay đổi.</p>
+                        </div>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                            <h4>👁️ Applitools Eyes</h4>
+                            <p>Visual AI testing với khả năng phát hiện bugs mà functional testing bỏ lỡ. Support cross-browser và responsive testing.</p>
+                        </div>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                            <h4>�️ TestRigor</h4>
+                            <p>Viết test cases bằng plain English. AI sẽ tự động convert thành executable tests cho web, mobile, API.</p>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h4>💡 Demo TestRigor - Plain English Testing:</h4>
+                        <div class="example-prompt" style="background: #1e1e1e; color: #4ecdc4; font-family: 'Courier New', monospace;">
+<span style="color: #ffe66d;">INPUT:</span> Plain English Test
+"click on login button"
+"type 'user@test.com' into email field"
+"type 'password123' into password field"
+"click on submit"
+"check that page contains 'Welcome'"
+
+<span style="color: #ff6b6b;">AI OUTPUT:</span> Auto-generated Selenium/Cypress
+driver.findElement(By.xpath("//button[contains(text(),'Login')]")).click();
+driver.findElement(By.id("email")).sendKeys("user@test.com");
+...</div>
+                        
+                        <h4 style="margin-top: 1rem;">🎯 ROI Impact:</h4>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: white;">
+                            <div class="icon-text">📈 90% reduction in test maintenance</div>
+                        </div>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white;">
+                            <div class="icon-text">⚡ 5x faster test creation</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 1em;">
+                    <div class="feature-card pulse" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; display: inline-block;">
+                        <div class="icon-text">🎯 Future of QC: AI + Human Intelligence</div>
+                    </div>
+                </div>
+            </div>
+        </div>        <!-- Slide 15: AI Impact Statistics -->
+        <div class="slide" data-init-d3="createAIImpactViz">
+            <div class="slide-header"><h2>📊 Tác động của AI trong Software Development</h2></div>
+            <div class="slide-body">
+                <h3>📈 Số liệu thống kê hiệu quả AI từ nghiên cứu thực tế</h3>
+                <div class="columns">
+                    <div class="column">                        <h4>🎯 Kết quả khảo sát GitHub & Stack Overflow (2024-2025):</h4>
+                        <div class="feature-card ai-feature">
+                            <div class="icon-text">⚡ Tăng 46% tốc độ coding (GitHub Copilot Study 2025)</div>
+                        </div>
+                        <div class="feature-card quality-feature">
+                            <div class="icon-text">🛡️ Giảm 55% bugs trong production (JetBrains Survey)</div>
+                        </div>
+                        <div class="feature-card speed-feature">
+                            <div class="icon-text">📋 Tăng 85% chất lượng documentation (Stack Overflow)</div>
+                        </div>
+                        <div class="feature-card automation-feature">
+                            <div class="icon-text">🔄 Giảm 73% thời gian tạo test cases (TestRigor)</div>
+                        </div>
+                        
+                        <h4 style="margin-top: 2rem;">💰 ROI của AI Tools (Q1 2025):</h4>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: white;">
+                            <div class="icon-text">💵 Tiết kiệm $1,200/dev/tháng (McKinsey Report)</div>
+                        </div>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white;">
+                            <div class="icon-text">⏱️ Tiết kiệm 18 giờ/tuần/dev (Accenture)</div>
+                        </div>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white;">
+                            <div class="icon-text">🚀 88% developer satisfaction với AI tools</div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h4>📊 Biểu đồ tương tác - Productivity Metrics</h4>
+                        <div id="ai-impact-viz" class="d3-container" style="position: relative;">
+                            <canvas id="productivityChart" style="max-height: 300px;"></canvas>
+                            <div style="margin-top: 20px;">
+                                <button id="toggleChart" style="background: #4A90E2; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+                                    📊 Chuyển đổi View
+                                </button>
+                                <button id="animateChart" style="background: #50E3C2; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">
+                                    ✨ Animate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Conclusion -->
+        <div class="slide">
+             <div class="slide-header"><h2>📋 Tổng kết & Nguyên tắc Vàng</h2></div>
+             <div class="slide-body">
+                <h3>🤝 AI là "Copilot" (Phi công phụ), không phải "Autopilot" (Tự lái)</h3>
+                <div class="columns">
+                    <div class="column">
+                        <div class="feature-card quality-feature">
+                            <div class="icon-text">1️⃣ <strong>Luôn kiểm tra lại (Verify):</strong></div>
+                            Kết quả của AI chỉ là gợi ý. Luôn phải được review bởi con người có chuyên môn.
+                        </div>
+                        <div class="feature-card ai-feature">
+                            <div class="icon-text">2️⃣ <strong>Ngữ cảnh tốt = Kết quả tốt:</strong></div>
+                            Chất lượng của prompt quyết định chất lượng của output. Hãy mô tả chi tiết và rõ ràng.
+                        </div>
+                        <div class="feature-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%); color: white;">
+                            <div class="icon-text">3️⃣ <strong>Bảo mật là trên hết:</strong></div>
+                            <strong>TUYỆT ĐỐI KHÔNG</strong> đưa thông tin nhạy cảm, mã nguồn độc quyền, hoặc dữ liệu khách hàng vào các công cụ AI công cộng.
+                        </div>
+                        <div class="feature-card automation-feature">
+                            <div class="icon-text">4️⃣ <strong>Tập trung vào sự sáng tạo:</strong></div>
+                            Để AI xử lý các tác vụ lặp lại, để bạn có thời gian tập trung vào việc giải quyết các bài toán phức tạp.
+                        </div>
+                    </div>
+                    <div class="column">
+                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop" class="content-image pulse" alt="Teamwork between human and AI">
+                        <div style="text-align: center; margin-top: 1em;">
+                            <div class="feature-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center;">
+                                <div class="icon-text">🚀 Human + AI = Unlimited Potential</div>
+                            </div>
+                        </div>                    </div>
+                </div>
+             </div>
+        </div>
+
+        <!-- Slide 17: Q&A -->
+        <div class="slide">
+            <div id="particles-js-qa" style="position: absolute; width: 100%; height: 100%; z-index: 0;"></div>            <div class="slide-body center-content fade-in" style="position: relative; z-index: 1;">
+                <h1 style="font-size: 4rem; color: #2c3e50; text-shadow: 3px 3px 6px rgba(0,0,0,0.2);">❓ Q & A</h1>
+                <h3 style="font-size: 2.2rem; color: #34495e; background: rgba(255,255,255,0.9); padding: 0.5em 1em; border-radius: 12px; margin: 1em 0;">🙏 Cảm ơn đã lắng nghe!</h3>
+                <div id="contact-cards" style="display: flex; justify-content: center; gap: 1.5em; margin-top: 1.5em;">
+                    <div class="feature-card pulse contact-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; text-align: center;" data-anime="slide-left">
+                        <div class="icon-text">💬 Hỏi đáp</div>
+                    </div>
+                    <div class="feature-card pulse contact-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; text-align: center;" data-anime="slide-up">
+                        <div class="icon-text">📧 Liên hệ</div>
+                    </div>
+                    <div class="feature-card pulse contact-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; text-align: center;" data-anime="slide-right">
+                        <div class="icon-text">🤝 Kết nối</div>
+                    </div>
+                </div>
+                <div style="margin-top: 2rem;">
+                    <button id="celebrate-btn" class="demo-button" style="font-size: 1rem; padding: 12px 24px;">
+                        🎉 Kết thúc với pháo hoa! 🎉
+                    </button>
+                </div>
+            </div>
+        </div></div>
+
+    <!-- Fullscreen Toggle Button -->
+    <button class="fullscreen-button" id="fullscreen-btn" title="Toggle Fullscreen">⛶</button>
+
+    <div id="controls">
+        <button id="prev-btn">‹ Trang trước</button>
+        <div id="slide-counter">1 / 17</div>
+        <button id="next-btn">Trang sau ›</button>
+    </div>
+      <!-- D3.js Library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Chart.js for enhanced charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Anime.js for smooth animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <!-- Particles.js for background effects -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <!-- Typed.js for typing effects -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const slideCounter = document.getElementById('slide-counter');
+            let currentSlide = 0;
+            const d3Initializers = {};
+
+            // --- Slide Navigation Logic ---
+            function showSlide(index) {
+                if (index >= slides.length) {
+                    index = slides.length - 1;
+                }
+                if (index < 0) {
+                    index = 0;
+                }
+
+                slides[currentSlide].classList.remove('active');
+                slides[index].classList.add('active');
+                currentSlide = index;
+
+                slideCounter.textContent = `${currentSlide + 1} / ${slides.length}`;
+                
+                // Initialize D3 visualization if the slide has one and it hasn't been initialized yet
+                const d3InitFunc = slides[index].dataset.initD3;
+                if (d3InitFunc && typeof d3Initializers[d3InitFunc] === 'function' && !slides[index].dataset.d3Initialized) {
+                    d3Initializers[d3InitFunc]();
+                    slides[index].dataset.d3Initialized = 'true'; // Mark as initialized
+                }
+            }            prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+            nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+            
+            // Fullscreen functionality
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            
+            function toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+            
+            // Update fullscreen button icon
+            document.addEventListener('fullscreenchange', () => {
+                fullscreenBtn.textContent = document.fullscreenElement ? '⛶' : '⛶';
+                fullscreenBtn.title = document.fullscreenElement ? 'Exit Fullscreen' : 'Enter Fullscreen';
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if(e.key === 'ArrowRight' || e.key === ' ') {
+                    e.preventDefault();
+                    showSlide(currentSlide + 1);
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    showSlide(currentSlide - 1);
+                } else if (e.key === 'F11') {
+                    e.preventDefault();
+                    toggleFullscreen();
+                } else if (e.key === 'Escape' && document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            });// --- D3.js Visualizations ---
+            
+            // Generic function to create force-directed graphs with enhanced animations
+            function createForceDirectedGraph(containerId, data) {
+                const container = document.getElementById(containerId);
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+
+                // Clear any existing content
+                d3.select(`#${containerId}`).selectAll("*").remove();
+
+                const svg = d3.select(`#${containerId}`)
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .attr("viewBox", [-width / 2, -height / 2, width, height]);
+
+                // Add gradient definitions
+                const defs = svg.append("defs");
+                const gradient = defs.append("radialGradient")
+                    .attr("id", "nodeGradient")
+                    .attr("cx", "30%")
+                    .attr("cy", "30%");
+                gradient.append("stop")
+                    .attr("offset", "0%")
+                    .attr("stop-color", "#50E3C2");
+                gradient.append("stop")
+                    .attr("offset", "100%")
+                    .attr("stop-color", "#4A90E2");
+
+                const simulation = d3.forceSimulation(data.nodes)
+                    .force("link", d3.forceLink(data.links).id(d => d.id).distance(width / 6))
+                    .force("charge", d3.forceManyBody().strength(-300))
+                    .force("center", d3.forceCenter(0, 0))
+                    .force("collision", d3.forceCollide().radius(25));
+
+                const link = svg.append("g")
+                    .selectAll("line")
+                    .data(data.links)
+                    .join("line")
+                    .attr("class", "link")
+                    .attr("stroke", "#999")
+                    .attr("stroke-opacity", 0.8)
+                    .attr("stroke-width", d => Math.sqrt(d.value || 2))
+                    .attr("stroke-dasharray", "8,4");
+
+                const node = svg.append("g")
+                    .selectAll("g")
+                    .data(data.nodes)
+                    .join("g")
+                    .attr("class", "node")
+                    .call(d3.drag()
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended));
+
+                node.append("circle")
+                    .attr("r", d => d.group === 0 ? 20 : 15)
+                    .attr("fill", d => d.group === 0 ? "url(#nodeGradient)" : '#50E3C2')
+                    .attr("stroke", "#fff")
+                    .attr("stroke-width", 3)
+                    .style("filter", "drop-shadow(3px 3px 6px rgba(0,0,0,0.2))")
+                    .on("mouseover", function(event, d) {
+                        d3.select(this)
+                            .transition()
+                            .duration(200)
+                            .attr("r", d => (d.group === 0 ? 20 : 15) * 1.2);
+                    })
+                    .on("mouseout", function(event, d) {
+                        d3.select(this)
+                            .transition()
+                            .duration(200)
+                            .attr("r", d => d.group === 0 ? 20 : 15);
+                    });
+
+                node.append("text")
+                    .text(d => d.id)
+                    .attr("x", 25)
+                    .attr("y", 4)
+                    .style("font-size", "11px")
+                    .style("font-weight", "600")
+                    .style("fill", "#2c3e50")
+                    .style("text-shadow", "1px 1px 2px rgba(255,255,255,0.8)");
+
+                // Add pulsing animation to central nodes
+                node.selectAll("circle")
+                    .filter(d => d.group === 0)
+                    .style("animation", "pulse 2s infinite");
+
+                simulation.on("tick", () => {
+                    link
+                        .attr("x1", d => d.source.x)
+                        .attr("y1", d => d.source.y)
+                        .attr("x2", d => d.target.x)
+                        .attr("y2", d => d.target.y);
+
+                    node.attr("transform", d => `translate(${d.x},${d.y})`);
+                });
+
+                function dragstarted(event, d) {
+                    if (!event.active) simulation.alphaTarget(0.3).restart();
+                    d.fx = d.x;
+                    d.fy = d.y;
+                }
+
+                function dragged(event, d) {
+                    d.fx = event.x;
+                    d.fy = event.y;
+                }
+
+                function dragended(event, d) {
+                    if (!event.active) simulation.alphaTarget(0);
+                    d.fx = null;
+                    d.fy = null;
+                }
+
+                // Add zoom functionality
+                const zoom = d3.zoom()
+                    .scaleExtent([0.5, 3])
+                    .on("zoom", (event) => {
+                        svg.selectAll("g").attr("transform", event.transform);
+                    });
+
+                svg.call(zoom);
+            }
+
+            // Create animated progress chart
+            function createProgressChart(containerId, data) {
+                const container = document.getElementById(containerId);
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+
+                d3.select(`#${containerId}`).selectAll("*").remove();
+
+                const svg = d3.select(`#${containerId}`)
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+
+                const margin = { top: 20, right: 20, bottom: 40, left: 100 };
+                const chartWidth = width - margin.left - margin.right;
+                const chartHeight = height - margin.top - margin.bottom;
+
+                const g = svg.append("g")
+                    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+                const xScale = d3.scaleLinear()
+                    .domain([0, 100])
+                    .range([0, chartWidth]);
+
+                const yScale = d3.scaleBand()
+                    .domain(data.map(d => d.category))
+                    .range([0, chartHeight])
+                    .padding(0.2);
+
+                // Add bars with animation
+                const bars = g.selectAll(".bar")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    .attr("class", "bar")
+                    .attr("x", 0)
+                    .attr("y", d => yScale(d.category))
+                    .attr("width", 0)
+                    .attr("height", yScale.bandwidth())
+                    .attr("fill", (d, i) => i % 2 === 0 ? "#4A90E2" : "#50E3C2")
+                    .attr("rx", 4);
+
+                bars.transition()
+                    .duration(1500)
+                    .delay((d, i) => i * 200)
+                    .attr("width", d => xScale(d.value));
+
+                // Add labels
+                g.selectAll(".label")
+                    .data(data)
+                    .enter()
+                    .append("text")
+                    .attr("class", "label")
+                    .attr("x", -10)
+                    .attr("y", d => yScale(d.category) + yScale.bandwidth() / 2)
+                    .attr("dy", "0.35em")
+                    .style("text-anchor", "end")
+                    .style("font-size", "12px")
+                    .style("font-weight", "600")
+                    .style("fill", "#2c3e50")
+                    .text(d => d.category);
+
+                // Add value labels
+                g.selectAll(".value")
+                    .data(data)
+                    .enter()
+                    .append("text")
+                    .attr("class", "value")
+                    .attr("x", d => xScale(d.value) + 5)
+                    .attr("y", d => yScale(d.category) + yScale.bandwidth() / 2)
+                    .attr("dy", "0.35em")
+                    .style("font-size", "11px")
+                    .style("font-weight", "600")
+                    .style("fill", "#2c3e50")
+                    .style("opacity", 0)
+                    .text(d => `${d.value}%`)
+                    .transition()
+                    .duration(1500)
+                    .delay((d, i) => i * 200 + 1000)
+                    .style("opacity", 1);
+            }              d3Initializers.createUnitTestViz = function() {
+                const startBtn = document.getElementById('start-unit-test');
+                const unitTestDemo = document.getElementById('unit-test-demo');
+
+                const demoText = `🤖 AI Assistant: Tôi sẽ tạo unit test cho hàm isPasswordStrong...
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 ANALYZING FUNCTION:
+function isPasswordStrong(password) {
+  return password.length >= 8 && 
+         /[0-9]/.test(password) && 
+         /[A-Z]/.test(password);
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 GENERATED TEST CASES:
+
+✅ TEST CASE 1: Valid Password
+describe('isPasswordStrong - Valid Cases', () => {
+  it('should return true for strong password', () => {
+    expect(isPasswordStrong('Password123')).toBe(true);
+    expect(isPasswordStrong('MySecret99')).toBe(true);
+  });
+});
+
+❌ TEST CASE 2: Too Short
+it('should return false for passwords < 8 chars', () => {
+  expect(isPasswordStrong('Pass1')).toBe(false);
+  expect(isPasswordStrong('Abc1')).toBe(false);
+});
+
+❌ TEST CASE 3: Missing Digits
+it('should return false without numbers', () => {
+  expect(isPasswordStrong('Password')).toBe(false);
+  expect(isPasswordStrong('OnlyLetters')).toBe(false);
+});
+
+❌ TEST CASE 4: Missing Uppercase
+it('should return false without uppercase', () => {
+  expect(isPasswordStrong('password123')).toBe(false);
+});
+
+❌ TEST CASE 5: Edge Cases
+it('should handle edge cases', () => {
+  expect(isPasswordStrong('')).toBe(false);
+  expect(isPasswordStrong(null)).toBe(false);
+});
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 HOÀN THÀNH: 5 test cases bao phủ tất cả scenarios!
+⚡ Tiết kiệm 90% thời gian viết unit test!`;
+
+                let typed;
+
+                if (startBtn) {
+                    startBtn.addEventListener('click', () => {
+                        if (typed) {
+                            typed.destroy();
+                        }
+                        
+                        unitTestDemo.innerHTML = '';
+                        startBtn.textContent = '⏳ Đang tạo test...';
+                        startBtn.disabled = true;                        typed = new Typed('#unit-test-demo', {
+                            strings: [demoText],
+                            typeSpeed: 25,
+                            showCursor: true,
+                            cursorChar: '|',
+                            onStringTyped: () => {
+                                // Auto scroll to bottom when typing is complete
+                                const demoElement = document.getElementById('unit-test-demo');
+                                if (demoElement) {
+                                    demoElement.scrollTop = demoElement.scrollHeight;
+                                }
+                            },
+                            onComplete: () => {
+                                startBtn.textContent = '🔄 Chạy lại Demo';
+                                startBtn.disabled = false;
+                            }
+                        });
+                    });
+                }
+
+                // Keep the original D3 visualization
+                const data = {
+                    nodes: [
+                        { id: "Hàm: isPasswordStrong", group: 0 },
+                        { id: "Case: Hợp lệ", group: 1 },
+                        { id: "Case: Quá ngắn", group: 1 },
+                        { id: "Case: Thiếu chữ số", group: 1 },
+                        { id: "Case: Thiếu chữ hoa", group: 1 },
+                        { id: "Case: Rỗng", group: 1 }
+                    ],
+                    links: [
+                        { source: "Hàm: isPasswordStrong", target: "Case: Hợp lệ" },
+                        { source: "Hàm: isPasswordStrong", target: "Case: Quá ngắn" },
+                        { source: "Hàm: isPasswordStrong", target: "Case: Thiếu chữ số" },
+                        { source: "Hàm: isPasswordStrong", target: "Case: Thiếu chữ hoa" },
+                        { source: "Hàm: isPasswordStrong", target: "Case: Rỗng" }
+                    ]
+                };
+                // createForceDirectedGraph('unit-test-viz', data);
+            };            d3Initializers.createArchitectureViz = function() {
+                const startBtn = document.getElementById('start-architecture');
+                const architectureDemo = document.getElementById('architecture-demo');
+
+                const demoText = `🤖 AI Assistant: Tôi sẽ thiết kế kiến trúc microservices cho app giao đồ ăn...
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🏗️ ANALYZING REQUIREMENTS:
+- Domain: Food delivery platform
+- Scale: 10k+ concurrent users
+- Features: User management, Restaurant catalog, Order processing, Payment
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📐 MICROSERVICES ARCHITECTURE:
+
+🌐 API Gateway (Kong/AWS API Gateway)
+├── 🔐 Authentication & Rate Limiting
+├── 📊 Request routing & Load balancing
+└── 📈 Monitoring & Analytics
+
+👤 User Service
+├── 📱 User registration/login
+├── 👥 Profile management
+├── 🗄️ Database: PostgreSQL
+└── 🔄 Events: UserCreated, UserUpdated
+
+🍽️ Restaurant Service  
+├── 🏪 Restaurant onboarding
+├── 🍕 Menu management
+├── 🗄️ Database: MongoDB (flexible schema)
+└── 🔄 Events: MenuUpdated, RestaurantStatusChanged
+
+📦 Order Service
+├── 🛒 Order creation & tracking
+├── 📍 Delivery coordination  
+├── 🗄️ Database: PostgreSQL + Redis (caching)
+└── 🔄 Events: OrderPlaced, OrderStatusChanged
+
+💳 Payment Service
+├── 💰 Payment processing (Stripe/PayPal)
+├── 💸 Refund handling
+├── 🗄️ Database: PostgreSQL (ACID compliance)
+└── 🔄 Events: PaymentCompleted, PaymentFailed
+
+📨 Event Bus (Apache Kafka)
+├── 🔄 Asynchronous communication
+├── 📤 Event sourcing
+└── 🔁 Retry mechanisms
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 HOÀN THÀNH: Kiến trúc scalable với 4 microservices!
+⚡ AI đã thiết kế architecture trong 2 phút thay vì 2 ngày!`;
+
+                let typed;
+
+                if (startBtn) {
+                    startBtn.addEventListener('click', () => {
+                        if (typed) {
+                            typed.destroy();
+                        }
+                        
+                        architectureDemo.innerHTML = '';
+                        startBtn.textContent = '⏳ Đang thiết kế...';
+                        startBtn.disabled = true;                        typed = new Typed('#architecture-demo', {
+                            strings: [demoText],
+                            typeSpeed: 25,
+                            showCursor: true,
+                            cursorChar: '|',
+                            onStringTyped: () => {
+                                // Auto scroll to bottom when typing is complete
+                                const demoElement = document.getElementById('architecture-demo');
+                                if (demoElement) {
+                                    demoElement.scrollTop = demoElement.scrollHeight;
+                                }
+                            },
+                            onComplete: () => {
+                                startBtn.textContent = '🔄 Chạy lại Demo';
+                                startBtn.disabled = false;
+                            }
+                        });
+                    });
+                }
+
+                // Keep the original D3 visualization
+                const data = {
+                    nodes: [
+                        { id: "API Gateway", group: 0 },
+                        { id: "User Service", group: 1 },
+                        { id: "Restaurant Service", group: 1 },
+                        { id: "Order Service", group: 1 },
+                        { id: "Payment Service", group: 1 }
+                    ],
+                    links: [
+                        { source: "API Gateway", target: "User Service" },
+                        { source: "API Gateway", target: "Restaurant Service" },
+                        { source: "API Gateway", target: "Order Service" },
+                        { source: "API Gateway", target: "Payment Service" },
+                        { source: "Order Service", target: "User Service"},
+                        { source: "Order Service", target: "Payment Service"}
+                    ]
+                };
+                // createForceDirectedGraph('architecture-viz', data);
+            };            d3Initializers.createTestCaseGenViz = function() {
+                const startBtn = document.getElementById('start-test-case');
+                const testCaseDemo = document.getElementById('test-case-demo');                const demoText = `🤖 AI Assistant: Tôi sẽ tạo test cases từ user story về lọc giá...
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 ANALYZING USER STORY:
+"Là người dùng, tôi muốn lọc sản phẩm theo khoảng giá từ X đến Y 
+để tìm sản phẩm phù hợp với ngân sách của mình"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 GENERATED TEST CASES:
+
+✅ TC001: Valid Price Range Filter
+Precondition: Trang sản phẩm có ít nhất 5 items với giá khác nhau
+Steps:
+1. Nhập "100000" vào field Min Price
+2. Nhập "500000" vào field Max Price  
+3. Click button "Lọc"
+Expected: Hiển thị chỉ sản phẩm có giá từ 100k-500k
+
+❌ TC002: Min Price > Max Price
+Steps:
+1. Nhập "500000" vào field Min Price
+2. Nhập "100000" vào field Max Price
+3. Click button "Lọc"
+Expected: Hiển thị error "Giá tối thiểu không được lớn hơn giá tối đa"
+
+❌ TC003: Invalid Input - Text in Price Field
+Steps:
+1. Nhập "abc" vào field Min Price
+2. Nhập "500000" vào field Max Price
+3. Click button "Lọc"
+Expected: Hiển thị error "Vui lòng nhập số hợp lệ"
+
+❌ TC004: Negative Price Values
+Steps:
+1. Nhập "-100000" vào field Min Price
+2. Nhập "500000" vào field Max Price
+3. Click button "Lọc"
+Expected: Hiển thị error "Giá không được âm"
+
+❌ TC005: Empty Price Fields
+Steps:
+1. Để trống field Min Price
+2. Để trống field Max Price
+3. Click button "Lọc"
+Expected: Hiển thị tất cả sản phẩm (no filter applied)
+
+❌ TC006: Very Large Numbers
+Steps:
+1. Nhập "999999999999" vào field Min Price
+2. Nhập "999999999999" vào field Max Price
+3. Click button "Lọc"
+Expected: Hiển thị message "Không tìm thấy sản phẩm"
+
+❌ TC007: Special Characters
+Steps:
+1. Nhập "100@#$" vào field Min Price
+2. Click button "Lọc"
+Expected: Hiển thị error "Chỉ được nhập số"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 HOÀN THÀNH: 7 test cases bao phủ 100% scenarios!
+⚡ AI đã tiết kiệm 3-4 giờ brainstorm test cases!`;
+
+                let typed;
+
+                if (startBtn) {
+                    startBtn.addEventListener('click', () => {
+                        if (typed) {
+                            typed.destroy();
+                        }
+                        
+                        testCaseDemo.innerHTML = '';
+                        startBtn.textContent = '⏳ Đang tạo test cases...';
+                        startBtn.disabled = true;typed = new Typed('#test-case-demo', {
+                            strings: [demoText],
+                            typeSpeed: 25,
+                            showCursor: true,
+                            cursorChar: '|',
+                            onStringTyped: () => {
+                                // Auto scroll to bottom when typing is complete
+                                const demoElement = document.getElementById('test-case-demo');
+                                if (demoElement) {
+                                    demoElement.scrollTop = demoElement.scrollHeight;
+                                }
+                            },
+                            onComplete: () => {
+                                startBtn.textContent = '🔄 Chạy lại Demo';
+                                startBtn.disabled = false;
+                            }
+                        });
+                    });
+                }
+
+                // Keep the original D3 visualization
+                const data = {
+                    nodes: [
+                        { id: "Feature: Lọc giá", group: 0 },
+                        { id: "TC1: Lọc thành công", group: 1 },
+                        { id: "TC2: Giá min > max", group: 1 },
+                        { id: "TC3: Nhập chữ", group: 1 },
+                        { id: "TC4: Để trống", group: 1 },
+                        { id: "TC5: Giá trị âm", group: 1 },
+                    ],
+                    links: [
+                        { source: "Feature: Lọc giá", target: "TC1: Lọc thành công" },
+                        { source: "Feature: Lọc giá", target: "TC2: Giá min > max" },
+                        { source: "Feature: Lọc giá", target: "TC3: Nhập chữ" },
+                        { source: "Feature: Lọc giá", target: "TC4: Để trống" },
+                        { source: "Feature: Lọc giá", target: "TC5: Giá trị âm" },
+                    ]
+                };
+                // createForceDirectedGraph('test-case-gen-viz', data);
+            }
+
+            d3Initializers.createAIImpactViz = function() {
+                // Chart.js implementation for interactive charts
+                const ctx = document.getElementById('productivityChart').getContext('2d');
+                let currentChartType = 'bar';
+                let chart;                const data = {
+                    labels: ['Tốc độ Coding', 'Giảm Bugs', 'Chất lượng Docs', 'Tạo Test Cases', 'Code Review', 'Debug Time', 'Developer Satisfaction'],
+                    datasets: [{
+                        label: 'Tăng hiệu suất (%)',
+                        data: [46, 55, 85, 73, 65, 67, 88],
+                        backgroundColor: [
+                            'rgba(74, 144, 226, 0.8)',
+                            'rgba(80, 227, 194, 0.8)',
+                            'rgba(255, 107, 107, 0.8)',
+                            'rgba(255, 234, 167, 0.8)',
+                            'rgba(162, 155, 254, 0.8)',
+                            'rgba(255, 118, 117, 0.8)',
+                            'rgba(46, 204, 113, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(74, 144, 226, 1)',
+                            'rgba(80, 227, 194, 1)',
+                            'rgba(255, 107, 107, 1)',
+                            'rgba(255, 234, 167, 1)',
+                            'rgba(162, 155, 254, 1)',
+                            'rgba(255, 118, 117, 1)',
+                            'rgba(46, 204, 113, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                };
+
+                function createChart(type) {
+                    if (chart) {
+                        chart.destroy();
+                    }
+                    
+                    chart = new Chart(ctx, {
+                        type: type,
+                        data: data,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: '#2c3e50',
+                                        font: {
+                                            size: 12,
+                                            weight: 'bold'
+                                        }
+                                    }
+                                }
+                            },                            scales: type === 'bar' ? {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    ticks: {
+                                        color: '#2c3e50',
+                                        font: {
+                                            weight: 'bold'
+                                        },
+                                        callback: function(value) {
+                                            return value + '%';
+                                        }
+                                    }
+                                },
+                                x: {
+                                    ticks: {
+                                        color: '#2c3e50',
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    }
+                                }
+                            } : {},
+                            animation: {
+                                duration: 2000,
+                                easing: 'easeOutBounce'
+                            }
+                        }
+                    });
+                }
+
+                createChart('bar');
+
+                document.getElementById('toggleChart').addEventListener('click', () => {
+                    currentChartType = currentChartType === 'bar' ? 'doughnut' : 'bar';
+                    createChart(currentChartType);
+                });
+
+                document.getElementById('animateChart').addEventListener('click', () => {
+                    createChart(currentChartType);
+                });
+            }
+
+            d3Initializers.createLogAnalysisDemo = function() {
+                const logMessages = [
+                    { type: 'ERROR', time: '14:30:25', msg: 'NullPointerException at UserService.java:45', color: '#ff6b6b' },
+                    { type: 'WARN', time: '14:30:30', msg: 'Connection timeout after 30s', color: '#ffa726' },
+                    { type: 'INFO', time: '14:30:35', msg: 'Processing user request...', color: '#4ecdc4' },
+                    { type: 'ERROR', time: '14:30:40', msg: 'Database connection failed', color: '#ff6b6b' },
+                    { type: 'DEBUG', time: '14:30:45', msg: 'Variable state: user=null', color: '#95e1d3' }
+                ];
+
+                const logStream = document.getElementById('log-stream');
+                const analyzeBtn = document.getElementById('analyze-btn');
+
+                function addLogMessage(log, index) {
+                    setTimeout(() => {
+                        const logDiv = document.createElement('div');
+                        logDiv.innerHTML = `<span style="color: ${log.color};">${log.type}</span> <span style="color: #4ecdc4;">${log.time}</span> ${log.msg}`;
+                        logDiv.style.marginBottom = '8px';
+                        logDiv.style.fontSize = '12px';
+                        logDiv.style.opacity = '0';
+                        logDiv.style.transform = 'translateX(-20px)';
+                        logDiv.style.transition = 'all 0.3s ease';
+                        
+                        logStream.appendChild(logDiv);
+                        
+                        setTimeout(() => {
+                            logDiv.style.opacity = '1';
+                            logDiv.style.transform = 'translateX(0)';
+                        }, 100);
+                        
+                        logStream.scrollTop = logStream.scrollHeight;
+                    }, index * 800);
+                }
+
+                logMessages.forEach(addLogMessage);
+
+                analyzeBtn.addEventListener('click', () => {
+                    analyzeBtn.textContent = '🔍 Đang phân tích...';
+                    analyzeBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        const analysisDiv = document.createElement('div');
+                        analysisDiv.innerHTML = `
+                            <div style="border-top: 1px solid #4ecdc4; margin-top: 10px; padding-top: 10px;">
+                                <div style="color: #4ecdc4; font-weight: bold;">🤖 AI Analysis:</div>
+                                <div style="color: #95e1d3; margin-top: 5px;">
+                                    ✅ Phát hiện 2 lỗi chính<br>
+                                    🎯 Root cause: User object chưa được validate<br>
+                                    💡 Khuyến nghị: Thêm null check tại line 42
+                                </div>
+                            </div>
+                        `;
+                        logStream.appendChild(analysisDiv);
+                        logStream.scrollTop = logStream.scrollHeight;
+                        
+                        analyzeBtn.textContent = '✅ Phân tích hoàn tất';
+                    }, 2000);
+                });
+            }
+
+            d3Initializers.createUserStoryViz = function() {
+                const startBtn = document.getElementById('start-typing');
+                const typingDemo = document.getElementById('typing-demo');                const demoText = `🤖 AI Assistant: Tôi sẽ tạo user stories cho app giao đồ ăn...
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 USER STORY #1:
+👤 Persona: Sinh viên bận rộn
+🎯 Mục tiêu: "Tôi muốn tìm kiếm món ăn theo khoảng cách để tiết kiệm thời gian chờ đợi"
+✅ Lý do: Tiết kiệm thời gian trong lịch học dày đặc
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💳 USER STORY #2:
+👤 Persona: Sinh viên tiết kiệm
+🎯 Mục tiêu: "Tôi muốn lưu nhiều phương thức thanh toán để không phải nhập lại mỗi lần đặt"
+✅ Lý do: Tăng tốc quá trình checkout và bảo mật thông tin
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⏰ USER STORY #3:
+👤 Persona: Người dùng thường xuyên
+🎯 Mục tiêu: "Tôi muốn đặt lại món đã order trước đó để tiết kiệm thời gian"
+✅ Lý do: Tăng trải nghiệm người dùng cho khách hàng trung thành
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 HOÀN THÀNH: Acceptance Criteria đã được tạo cho từng story!
+⚡ AI đã tiết kiệm 2-3 giờ phân tích và viết requirements!`;
+
+                let typed;
+
+                startBtn.addEventListener('click', () => {
+                    if (typed) {
+                        typed.destroy();
+                    }
+                    
+                    typingDemo.innerHTML = '';
+                    startBtn.textContent = '⏳ Đang tạo...';
+                    startBtn.disabled = true;                        typed = new Typed('#typing-demo', {
+                            strings: [demoText],
+                            typeSpeed: 25,
+                            showCursor: true,
+                            cursorChar: '|',
+                            onStringTyped: () => {
+                                // Auto scroll to bottom when typing is complete
+                                const demoElement = document.getElementById('typing-demo');
+                                if (demoElement) {
+                                    demoElement.scrollTop = demoElement.scrollHeight;
+                                }
+                            },
+                            onComplete: () => {
+                                startBtn.textContent = '🔄 Chạy lại Demo';
+                                startBtn.disabled = false;
+                            }
+                        });
+                });
+            }
+
+            d3Initializers.createCodeDemo = function() {
+                const generateBtn = document.getElementById('generate-code');
+                const codeSuggestion = document.getElementById('code-suggestion');
+
+                const codeSnippets = [
+                    `  // Tính phí ship dựa trên khoảng cách và trọng lượng
+  const baseFee = 15000; // Phí cơ bản
+  const distanceFee = distance * 3000; // 3k/km
+  const weightFee = weight > 1 ? (weight - 1) * 5000 : 0;
+  
+  return baseFee + distanceFee + weightFee;`,
+                    
+                    `  // Áp dụng discount cho khách hàng VIP
+  let totalFee = 15000 + (distance * 3000);
+  if (weight > 1) totalFee += (weight - 1) * 5000;
+  
+  // Miễn phí ship cho đơn > 200k
+  return totalFee > 200000 ? 0 : totalFee;`,
+                    
+                    `  // Tính phí ship theo khung giờ
+  const rushHour = new Date().getHours();
+  let multiplier = (rushHour >= 11 && rushHour <= 13) ? 1.5 : 1;
+  
+  return (15000 + distance * 3000) * multiplier;`
+                ];
+
+                let currentIndex = 0;
+
+                generateBtn.addEventListener('click', () => {
+                    generateBtn.textContent = '🤖 Generating...';
+                    generateBtn.disabled = true;
+                    
+                    // Animate typing effect
+                    const code = codeSnippets[currentIndex];
+                    codeSuggestion.innerHTML = '<div style="color: #4A90E2;">// 🤖 Copilot suggestion...</div>';
+                    
+                    let i = 0;
+                    const lines = code.split('\n');
+                    
+                    function typeLine() {
+                        if (i < lines.length) {
+                            const lineDiv = document.createElement('div');
+                            lineDiv.textContent = lines[i];
+                            lineDiv.style.opacity = '0';
+                            lineDiv.style.transform = 'translateX(-10px)';
+                            lineDiv.style.transition = 'all 0.3s ease';
+                            
+                            codeSuggestion.appendChild(lineDiv);
+                            
+                            setTimeout(() => {
+                                lineDiv.style.opacity = '1';
+                                lineDiv.style.transform = 'translateX(0)';
+                            }, 50);
+                            
+                            i++;
+                            setTimeout(typeLine, 200);
+                        } else {
+                            generateBtn.textContent = '✨ Generate Another';
+                            generateBtn.disabled = false;
+                            currentIndex = (currentIndex + 1) % codeSnippets.length;
+                        }
+                    }
+                    
+                    setTimeout(typeLine, 500);
+                });
+            }            // --- Initialize Presentation ---
+            showSlide(0);
+
+            // Initialize Particles.js for first slide
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 80, density: { enable: true, value_area: 800 } },
+                        color: { value: '#4A90E2' },
+                        shape: { type: 'circle' },
+                        opacity: { value: 0.5, random: false },
+                        size: { value: 3, random: true },
+                        line_linked: { enable: true, distance: 150, color: '#4A90E2', opacity: 0.4, width: 1 },
+                        move: { enable: true, speed: 6, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                        modes: { grab: { distance: 140, line_linked: { opacity: 1 } }, bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 }, repulse: { distance: 200, duration: 0.4 }, push: { particles_nb: 4 }, remove: { particles_nb: 2 } }
+                    },
+                    retina_detect: true
+                });
+            }
+
+            // Initialize typing effect for intro slide
+            if (typeof Typed !== 'undefined') {
+                setTimeout(() => {
+                    new Typed('#typing-intro', {
+                        strings: [
+                            'Khám phá sức mạnh của AI...',
+                            'Tăng hiệu suất lên 55%...',
+                            'Từ ý tưởng đến sản phẩm nhanh hơn...',
+                            'Cùng bắt đầu hành trình! 🚀'
+                        ],
+                        typeSpeed: 60,
+                        backSpeed: 30,
+                        backDelay: 2000,
+                        startDelay: 1000,
+                        loop: true,
+                        showCursor: true,
+                        cursorChar: '✨'
+                    });
+                }, 2000);
+            }
+
+            // Add slide transition animations
+            function addSlideAnimations() {
+                const activeSlide = document.querySelector('.slide.active');
+                const elements = activeSlide.querySelectorAll('.feature-card, .content-image, h3, h4');
+                
+                elements.forEach((el, index) => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        el.style.transition = 'all 0.6s ease-out';
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }
+
+            // Add easter egg - Konami code for special effects
+            let konamiCode = [];
+            const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
+            
+            document.addEventListener('keydown', (e) => {
+                konamiCode.push(e.keyCode);
+                if (konamiCode.length > konamiSequence.length) {
+                    konamiCode.shift();
+                }
+                
+                if (konamiCode.join(',') === konamiSequence.join(',')) {
+                    // Easter egg activated!
+                    document.body.style.animation = 'rainbow 2s infinite';
+                    setTimeout(() => {
+                        document.body.style.animation = '';
+                    }, 10000);
+                }
+            });
+
+            // Add rainbow animation for easter egg
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes rainbow {
+                    0% { filter: hue-rotate(0deg); }
+                    100% { filter: hue-rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);            // Trigger animations when slides change
+            const originalShowSlide = showSlide;
+            showSlide = function(index) {
+                originalShowSlide(index);
+                setTimeout(addSlideAnimations, 100);
+                
+                // Initialize special animations for Q&A slide
+                if (index === slides.length - 1) {
+                    initQASlideAnimations();
+                }
+            };
+
+            function initQASlideAnimations() {
+                // Initialize particles for Q&A slide
+                if (typeof particlesJS !== 'undefined') {
+                    particlesJS('particles-js-qa', {
+                        particles: {
+                            number: { value: 50 },
+                            color: { value: ['#4facfe', '#43e97b', '#fa709a'] },
+                            shape: { type: 'circle' },
+                            size: { value: 4, random: true },
+                            move: { enable: true, speed: 3 }
+                        }
+                    });
+                }
+
+                // Animate contact cards with Anime.js
+                if (typeof anime !== 'undefined') {
+                    anime({
+                        targets: '.contact-card',
+                        translateY: [50, 0],
+                        opacity: [0, 1],
+                        scale: [0.8, 1],
+                        duration: 800,
+                        delay: anime.stagger(200),
+                        easing: 'easeOutElastic(1, .8)'
+                    });
+                }
+
+                // Celebration button
+                const celebrateBtn = document.getElementById('celebrate-btn');
+                if (celebrateBtn) {
+                    celebrateBtn.addEventListener('click', () => {
+                        // Create fireworks effect
+                        for (let i = 0; i < 15; i++) {
+                            createFirework();
+                        }
+                        
+                        // Animate button
+                        if (typeof anime !== 'undefined') {
+                            anime({
+                                targets: celebrateBtn,
+                                scale: [1, 1.2, 1],
+                                rotate: [0, 360],
+                                duration: 1000,
+                                easing: 'easeInOutQuad'
+                            });
+                        }
+                        
+                        celebrateBtn.textContent = '🎆 Cảm ơn bạn! 🎆';
+                    });
+                }
+            }
+
+            function createFirework() {
+                const firework = document.createElement('div');
+                firework.innerHTML = ['🎆', '✨', '🎇', '⭐', '💫'][Math.floor(Math.random() * 5)];
+                firework.style.position = 'fixed';
+                firework.style.left = Math.random() * 100 + 'vw';
+                firework.style.top = Math.random() * 100 + 'vh';
+                firework.style.fontSize = '2rem';
+                firework.style.zIndex = '9999';
+                firework.style.pointerEvents = 'none';
+                
+                document.body.appendChild(firework);
+                
+                if (typeof anime !== 'undefined') {
+                    anime({
+                        targets: firework,
+                        translateY: -200,
+                        opacity: [1, 0],
+                        scale: [1, 2],
+                        duration: 2000,
+                        easing: 'easeOutQuad',
+                        complete: () => {
+                            document.body.removeChild(firework);
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

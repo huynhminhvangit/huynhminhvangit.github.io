@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infographic: Cuộc Cách Mạng AI trong Phát Triển Phần Mềm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #00B8A9, #F6416C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center py-12">
+            <h1 class="text-4xl md:text-6xl font-black gradient-text">Cuộc Cách Mạng AI</h1>
+            <h2 class="text-2xl md:text-4xl font-bold text-gray-700 mt-2">trong Phát Triển Phần Mềm</h2>
+            <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
+                Trí tuệ nhân tạo tạo sinh đang định hình lại toàn bộ Vòng đời Phát triển Phần mềm (SDLC), mang lại những lợi ích đột phá về tốc độ, chất lượng và chi phí.
+            </p>
+        </header>
+
+        <main>
+            <section id="sdlc" class="mb-16">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h3 class="text-2xl font-bold text-center mb-2 text-[#00B8A9]">AI Tích Hợp Xuyên Suốt SDLC</h3>
+                    <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">AI không chỉ là công cụ, mà là đối tác chiến lược trong mọi giai đoạn, từ lên ý tưởng đến triển khai và bảo trì.</p>
+                    <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4 text-center">
+                        <div class="flex items-center">
+                            <div class="p-4 bg-teal-100 text-teal-800 rounded-lg shadow">Yêu cầu</div>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-300 transform md:-rotate-0 rotate-90">&rarr;</div>
+                        <div class="flex items-center">
+                            <div class="p-4 bg-red-100 text-red-800 rounded-lg shadow">Thiết kế</div>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-300 transform md:-rotate-0 rotate-90">&rarr;</div>
+                        <div class="flex items-center">
+                            <div class="p-4 bg-yellow-100 text-yellow-800 rounded-lg shadow">Phát triển</div>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-300 transform md:-rotate-0 rotate-90">&rarr;</div>
+                        <div class="flex items-center">
+                            <div class="p-4 bg-blue-100 text-blue-800 rounded-lg shadow">Kiểm thử</div>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-300 transform md:-rotate-0 rotate-90">&rarr;</div>
+                         <div class="flex items-center">
+                            <div class="p-4 bg-indigo-100 text-indigo-800 rounded-lg shadow">Triển khai</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <section id="ba" class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 h-full flex flex-col">
+                        <h3 class="text-3xl font-bold text-[#00B8A9] mb-4">Dành cho Business Analyst (BA)</h3>
+                        <p class="text-gray-600 mb-6 flex-grow">AI tự động hóa việc thu thập, phân tích và xác thực yêu cầu, giúp BA tập trung vào chiến lược và đảm bảo chất lượng từ gốc.</p>
+                        <div class="bg-[#F6416C] text-white p-6 rounded-xl text-center mb-6">
+                            <div class="text-5xl font-black">80%</div>
+                            <div class="text-lg font-semibold">Giảm thời gian soạn thảo yêu cầu</div>
+                        </div>
+                        <h4 class="text-xl font-bold mb-4 text-center">So sánh Tính năng các Công cụ BA</h4>
+                         <div class="chart-container h-64 md:h-80">
+                            <canvas id="baChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="dev" class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 h-full">
+                        <h3 class="text-3xl font-bold text-[#00B8A9] mb-4">Dành cho Developer (DEV)</h3>
+                        <p class="text-gray-600 mb-6">Với vai trò là một lập trình viên cặp đôi, AI giúp tạo mã, gỡ lỗi, quét bảo mật và tự động hóa các tác vụ lặp lại, định hình lại vai trò của lập trình viên.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-[#F6416C] text-white p-6 rounded-xl text-center flex flex-col justify-center">
+                                <div class="text-5xl font-black">25%</div>
+                                <div class="text-lg font-semibold">Tiết kiệm thời gian lập trình</div>
+                            </div>
+                            <div class="p-6 bg-gray-100 rounded-xl">
+                                <h4 class="text-xl font-bold mb-4 text-center">Phân bổ Năng lực Công cụ DEV</h4>
+                                <div class="chart-container h-64 md:h-auto">
+                                    <canvas id="devChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="qc" class="lg:col-span-3">
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <h3 class="text-3xl font-bold text-center text-[#00B8A9] mb-4">Dành cho Quality Control (QC)</h3>
+                        <p class="text-gray-600 mb-8 text-center max-w-3xl mx-auto">"Kiểm thử tác nhân" và "test tự phục hồi" đang cách mạng hóa ngành QA, giúp giảm thiểu gánh nặng bảo trì và tăng tốc độ kiểm thử lên nhiều lần.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                            <div class="md:col-span-1 text-center">
+                                <div class="bg-[#F6416C] text-white p-6 rounded-xl">
+                                    <div class="text-5xl font-black">85%</div>
+                                    <div class="text-lg font-semibold">Giảm công sức bảo trì test</div>
+                                </div>
+                                <p class="mt-4 text-gray-600">AI tự động thích ứng với các thay đổi UI, giảm đáng kể các test case "dễ hỏng".</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <h4 class="text-xl font-bold mb-4 text-center">So sánh Lợi ích các Công cụ QC</h4>
+                                <div class="chart-container">
+                                    <canvas id="qcChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="considerations" class="lg:col-span-3 mt-8">
+                     <h3 class="text-3xl font-bold text-center text-[#00B8A9] mb-8">Lưu ý khi Lựa chọn Công cụ AI</h3>
+                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <div class="text-5xl mb-4">🔗</div>
+                            <h4 class="text-xl font-bold mb-2">Tích hợp</h4>
+                            <p class="text-gray-600">Ưu tiên các công cụ tích hợp liền mạch với hệ sinh thái hiện có của bạn (IDE, CI/CD, Jira) để tối đa hóa hiệu quả.</p>
+                        </div>
+                         <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <div class="text-5xl mb-4">🛡️</div>
+                            <h4 class="text-xl font-bold mb-2">Bảo mật</h4>
+                            <p class="text-gray-600">Đảm bảo nhà cung cấp có chính sách bảo mật dữ liệu rõ ràng, không sử dụng mã nguồn của bạn để huấn luyện mô hình.</p>
+                        </div>
+                         <div class="bg-white p-6 rounded-2xl shadow-lg">
+                             <div class="text-5xl mb-4">💰</div>
+                            <h4 class="text-xl font-bold mb-2">Định giá</h4>
+                            <p class="text-gray-600">Phân tích Tổng chi phí sở hữu (TCO), bao gồm phí ẩn, chi phí đào tạo và các yêu cầu về nền tảng phụ thuộc.</p>
+                        </div>
+                     </div>
+                </section>
+
+            </div>
+        </main>
+
+        <footer class="text-center py-12 mt-8 border-t border-gray-200">
+            <p class="text-gray-700 font-bold text-lg">AI: Không chỉ là tương lai, mà là lợi thế cạnh tranh của hiện tại.</p>
+            <p class="text-sm text-gray-500 mt-2">Dữ liệu được tổng hợp từ báo cáo "Công cụ AI Hỗ trợ Phát triển Phần mềm".</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                }
+                return label;
+            };
+
+            const commonTooltipOptions = {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                }
+            };
+            
+            const wrapText = (str, maxWidth) => {
+                if (str.length <= maxWidth) {
+                    return str;
+                }
+                const words = str.split(' ');
+                const lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + word).length < maxWidth) {
+                        currentLine += word + ' ';
+                    } else {
+                        lines.push(currentLine.trim());
+                        currentLine = word + ' ';
+                    }
+                });
+                lines.push(currentLine.trim());
+                return lines;
+            };
+
+
+            const baCtx = document.getElementById('baChart')?.getContext('2d');
+            if(baCtx) {
+                new Chart(baCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['BlazeSQL', 'Copilot4DevOps', 'aqua cloud'],
+                        datasets: [{
+                            label: 'Phân tích Yêu cầu',
+                            data: [3, 5, 4],
+                            backgroundColor: '#FFDE7D',
+                            borderColor: '#FFDE7D',
+                            borderWidth: 1
+                        }, {
+                            label: 'Tạo Tài liệu Tự động',
+                            data: [2, 5, 5],
+                            backgroundColor: '#00B8A9',
+                            borderColor: '#00B8A9',
+                            borderWidth: 1
+                        }, {
+                            label: 'Hỗ trợ bằng Giọng nói',
+                            data: [0, 2, 5],
+                            backgroundColor: '#F6416C',
+                            borderColor: '#F6416C',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                stacked: true,
+                                beginAtZero: true,
+                                ticks: { display: false },
+                                grid: { display: false },
+                                border: { display: false }
+                            },
+                            y: {
+                                stacked: true,
+                                grid: { display: false },
+                                border: { display: false },
+                                ticks: {
+                                    font: { weight: 'bold' }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                            tooltip: commonTooltipOptions.plugins.tooltip
+                        }
+                    }
+                });
+            }
+
+            const devCtx = document.getElementById('devChart')?.getContext('2d');
+            if(devCtx) {
+                new Chart(devCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Tạo mã', 'Gỡ lỗi', 'Bảo mật', 'Tài liệu', 'Tối ưu hóa'],
+                        datasets: [{
+                            data: [40, 20, 15, 15, 10],
+                            backgroundColor: ['#00B8A9', '#F6416C', '#FFDE7D', '#4A90E2', '#7ED321'],
+                            borderColor: '#ffffff',
+                            borderWidth: 4,
+                            hoverBorderColor: '#f3f4f6'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                  padding: 15
+                                }
+                            },
+                            tooltip: commonTooltipOptions.plugins.tooltip
+                        }
+                    }
+                });
+            }
+
+            const qcCtx = document.getElementById('qcChart')?.getContext('2d');
+            if(qcCtx) {
+                const qcLabels = [
+                    'Tự động hóa Low-code',
+                    'Test Tự phục hồi', 
+                    'Phân tích Lỗi AI', 
+                    'Kiểm thử API',
+                    'Tích hợp CI/CD'
+                ].map(label => wrapText(label, 16));
+                
+                new Chart(qcCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: qcLabels,
+                        datasets: [{
+                            label: 'TestRigor',
+                            data: [5, 4, 3, 4, 5],
+                            backgroundColor: 'rgba(246, 65, 108, 0.2)',
+                            borderColor: '#F6416C',
+                            pointBackgroundColor: '#F6416C',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: '#F6416C'
+                        }, {
+                            label: 'mabl',
+                            data: [4, 5, 5, 4, 4],
+                            backgroundColor: 'rgba(0, 184, 169, 0.2)',
+                            borderColor: '#00B8A9',
+                            pointBackgroundColor: '#00B8A9',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: '#00B8A9'
+                        },
+                        {
+                            label: 'Testsigma',
+                            data: [5, 4, 5, 5, 5],
+                            backgroundColor: 'rgba(255, 222, 125, 0.2)',
+                            borderColor: '#FFDE7D',
+                            pointBackgroundColor: '#FFDE7D',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: '#FFDE7D'
+                        }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    color: '#e2e8f0'
+                                },
+                                grid: {
+                                    color: '#e2e8f0'
+                                },
+                                pointLabels: {
+                                    font: {
+                                        size: 11,
+                                        weight: 'bold'
+                                    },
+                                    color: '#475569'
+                                },
+                                ticks: {
+                                    backdropColor: 'transparent',
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        plugins: {
+                           legend: {
+                                position: 'bottom',
+                            },
+                            tooltip: commonTooltipOptions.plugins.tooltip
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

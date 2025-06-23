@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">    <meta name="apple-mobile-web-app-title" content="Hỏi Đáp Vui">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>🧠 Hỏi Đáp Vui - Khám Phá Thế Giới Cùng Bé</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">    <link rel="manifest" href="manifest.json">
+    <link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#667eea">
+    <link rel="stylesheet" href="style.css">    <!-- SEO Meta Tags -->
+    <meta name="description" content="Hỏi Đáp Vui - Game học tập thông minh cho trẻ em với những câu hỏi Vì sao thú vị, giúp phát triển tư duy và khám phá thế giới xung quanh">
+    <meta name="keywords" content="game học tập, trẻ em, câu hỏi vì sao, giáo dục, khoa học, tư duy, hỏi đáp vui">
+    <meta name="author" content="Hỏi Đáp Vui">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="🧠 Hỏi Đáp Vui - Khám Phá Thế Giới Cùng Bé">
+    <meta property="og:description" content="Khám phá thế giới với những câu hỏi 'Vì sao' thú vị! Game học tập vui nhộn giúp trẻ phát triển tư duy và kiến thức.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://huynhminhvangit.github.io/games/quiz-app/">
+    <meta property="og:image" content="https://huynhminhvangit.github.io/games/quiz-app/favicon/android-chrome-192x192.png">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="🧠 Hỏi Đáp Vui - Khám Phá Thế Giới Cùng Bé">
+    <meta name="twitter:description" content="Khám phá thế giới với những câu hỏi 'Vì sao' thú vị!">
+    <meta name="twitter:image" content="https://huynhminhvangit.github.io/games/quiz-app/favicon/android-chrome-192x192.png">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+            <div class="shape shape-6"></div>
+        </div>
+    </div>
+
+    <!-- Sound Toggle -->
+    <button id="soundToggle" class="sound-toggle">
+        <i class="fas fa-volume-up"></i>
+    </button>
+
+    <div class="app-container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen">
+            <div class="welcome-container">                <div class="logo-container">
+                    <div class="logo-icon">🧠</div>
+                    <h1 class="app-title">Hỏi Đáp Vui</h1>
+                    <p class="app-subtitle">Khám phá thế giới với những câu hỏi thú vị!</p>
+                </div>
+                
+                <div class="welcome-card glass-card">
+                    <div class="welcome-character">
+                        <div class="character-emoji">🤔</div>
+                        <div class="character-sparkles">
+                            <span>✨</span>
+                            <span>⭐</span>
+                            <span>💫</span>
+                        </div>
+                    </div>
+                    
+                    <div class="welcome-content">
+                        <h2>Chào mừng bé đến với thế giới tri thức!</h2>
+                        <p>Hãy cùng khám phá <strong>10 câu hỏi "Vì sao"</strong> thú vị và học những điều bổ ích nhé!</p>
+                        
+                        <div class="game-features">
+                            <div class="feature">
+                                <i class="fas fa-brain"></i>
+                                <span>Phát triển tư duy</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>Học hỏi vui vẻ</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-star"></i>
+                                <span>Thử thách bản thân</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="startBtn" class="btn btn-primary btn-glow">
+                        <i class="fas fa-rocket"></i>
+                        <span>Bắt đầu khám phá</span>
+                        <div class="btn-shine"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen hidden">
+            <div class="game-header">
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <span class="progress-text">Tiến độ</span>
+                        <span class="question-counter">
+                            <span id="currentQuestion">1</span> / 10
+                        </span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                        <div class="progress-glow"></div>
+                    </div>
+                </div>
+                
+                <div class="score-container">
+                    <div class="score-icon">🏆</div>
+                    <span id="currentScore">0</span>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div class="question-card glass-card">
+                    <div class="question-icon">❓</div>
+                    <h2 id="questionText" class="question-text"></h2>
+                </div>
+                
+                <div class="answers-container">
+                    <div class="answers-grid">
+                        <button class="answer-btn glass-card" data-answer="A">
+                            <div class="answer-letter">A</div>
+                            <span class="answer-text" id="answerA"></span>
+                            <div class="answer-icon"></div>
+                        </button>
+                        <button class="answer-btn glass-card" data-answer="B">
+                            <div class="answer-letter">B</div>
+                            <span class="answer-text" id="answerB"></span>
+                            <div class="answer-icon"></div>
+                        </button>
+                        <button class="answer-btn glass-card" data-answer="C">
+                            <div class="answer-letter">C</div>
+                            <span class="answer-text" id="answerC"></span>
+                            <div class="answer-icon"></div>
+                        </button>
+                        <button class="answer-btn glass-card" data-answer="D">
+                            <div class="answer-letter">D</div>
+                            <span class="answer-text" id="answerD"></span>
+                            <div class="answer-icon"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="feedback" class="feedback hidden">
+                <div class="feedback-card glass-card">
+                    <div class="feedback-icon"></div>
+                    <div class="feedback-content">
+                        <div class="feedback-title"></div>
+                        <div class="feedback-text"></div>
+                    </div>
+                    <div class="feedback-animation"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="screen hidden">
+            <div class="result-container">
+                <div class="result-card glass-card">
+                    <div class="result-header">
+                        <div class="result-character">
+                            <div class="character-main">🎉</div>
+                            <div class="confetti">
+                                <span>🎊</span>
+                                <span>✨</span>
+                                <span>🌟</span>
+                                <span>🎈</span>
+                            </div>
+                        </div>
+                        <h2 id="resultTitle" class="result-title"></h2>
+                    </div>
+                    
+                    <div class="score-display">
+                        <div class="score-circle">
+                            <div class="score-ring">
+                                <svg class="score-svg" viewBox="0 0 100 100">
+                                    <defs>
+                                        <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                            <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle cx="50" cy="50" r="45" class="score-bg"></circle>
+                                    <circle cx="50" cy="50" r="45" class="score-progress" id="scoreProgress"></circle>
+                                </svg>
+                                <div class="score-content">
+                                    <span id="finalScore" class="score-number">0</span>
+                                    <span class="score-total">/10</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="score-details">
+                            <div class="score-stat">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Đúng: <span id="correctAnswers">0</span></span>
+                            </div>
+                            <div class="score-stat">
+                                <i class="fas fa-times-circle"></i>
+                                <span>Sai: <span id="wrongAnswers">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="encouragement-section">
+                        <p id="encouragement" class="encouragement-text"></p>
+                        <div class="achievements" id="achievements"></div>
+                    </div>
+                    
+                    <div class="result-actions">
+                        <button id="playAgainBtn" class="btn btn-primary btn-glow">
+                            <i class="fas fa-redo"></i>
+                            <span>Chơi lại</span>
+                        </button>
+                        <button id="shareBtn" class="btn btn-secondary">
+                            <i class="fas fa-share"></i>
+                            <span>Chia sẻ</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Elements -->
+    <div class="floating-emojis" id="floatingEmojis"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
