@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <title>Security Lab - Huỳnh Minh Vàng - Kỹ sư phần mềm</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="style.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2405594346881842"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Security Lab</h1>
+            <p>Môi trường giả lập tấn công web để học phòng chống</p>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ CẢNH BÁO QUAN TRỌNG</h3>
+            <p><strong>Đây là môi trường lab giáo dục!</strong> Tất cả dữ liệu được lưu trong bộ nhớ tạm và sẽ mất khi
+                refresh trang. Không nhập thông tin thật!</p>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li>Chỉ sử dụng cho mục đích học tập</li>
+                <li>Không áp dụng kiến thức này để tấn công hệ thống thật</li>
+                <li>Luôn sử dụng dữ liệu giả khi test</li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="section">
+                <h3>🎯 Mục tiêu giả lập (Fake Login)</h3>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Tên đăng nhập:</label>
+                        <input type="text" id="username" name="username" placeholder="Nhập tên đăng nhập giả">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Mật khẩu:</label>
+                        <input type="password" id="password" name="password" placeholder="Nhập mật khẩu giả">
+                    </div>
+                    <div class="form-group">
+                        <label for="creditCard">Thẻ tín dụng (giả):</label>
+                        <input type="text" id="creditCard" name="creditCard" placeholder="1234-5678-9012-3456">
+                    </div>
+                    <button type="submit" class="btn">Đăng nhập</button>
+                </form>
+            </div>
+
+            <div class="section">
+                <h3>🕵️ Bảng điều khiển tấn công</h3>
+                <div class="controls">
+                    <button class="btn btn-danger" onclick="startKeylogger()">Bật Keylogger</button>
+                    <button class="btn btn-danger" onclick="stealFormData()">Đánh cắp Form</button>
+                    <button class="btn btn-danger" onclick="collectBrowserInfo()">Thu thập Info</button>
+                    <button class="btn" onclick="clearLogs()">Xóa Log</button>
+                </div>
+                <div class="status safe" id="status">Hệ thống an toàn</div>
+            </div>
+
+            <div class="section full-width">
+                <h3>📊 Log hoạt động độc hại (Giả lập)</h3>
+                <div class="log-area" id="logArea">
+                    <div>[SYSTEM] Security Lab đã khởi động</div>
+                    <div>[INFO] Môi trường lab an toàn - Tất cả dữ liệu là giả</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🛡️ Biện pháp phòng chống</h3>
+                <div class="controls">
+                    <button class="btn" onclick="enableCSP()">Bật CSP</button>
+                    <button class="btn" onclick="blockMaliciousRequests()">Chặn Request</button>
+                    <button class="btn" onclick="sanitizeInputs()">Làm sạch Input</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📈 Thống kê tấn công</h3>
+                <div id="stats">
+                    <p>Keystrokes captured: <span id="keystrokeCount">0</span></p>
+                    <p>Forms intercepted: <span id="formCount">0</span></p>
+                    <p>Data leaked: <span id="dataCount">0</span> bytes</p>
+                    <p>Blocked attempts: <span id="blockedCount">0</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Biến toàn cục để theo dõi
+        let keyloggerActive = false;
+        let formInterceptActive = false;
+        let capturedData = [];
+        let stats = {
+            keystrokes: 0,
+            forms: 0,
+            dataBytes: 0,
+            blocked: 0
+        };
+
+        // Hàm log an toàn
+        function logActivity(message, type = 'INFO') {
+            const logArea = document.getElementById('logArea');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] [${type}] ${message}`;
+            logArea.innerHTML += `<div>${logEntry}</div>`;
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        // Giả lập Keylogger
+        function startKeylogger() {
+            if (keyloggerActive) {
+                logActivity('Keylogger đã đang hoạt động', 'WARNING');
+                return;
+            }
+
+            keyloggerActive = true;
+            document.getElementById('status').className = 'status danger';
+            document.getElementById('status').textContent = 'CẢNH BÁO: Keylogger đang hoạt động!';
+
+            logActivity('Keylogger đã được kích hoạt', 'ATTACK');
+
+            document.addEventListener('keydown', function (e) {
+                if (keyloggerActive) {
+                    const keyData = {
+                        key: e.key,
+                        timestamp: Date.now(),
+                        target: e.target.tagName,
+                        targetId: e.target.id || 'unknown'
+                    };
+
+                    capturedData.push(keyData);
+                    stats.keystrokes++;
+                    stats.dataBytes += JSON.stringify(keyData).length;
+
+                    logActivity(`Key captured: ${e.key} on ${e.target.tagName}#${e.target.id}`, 'KEYLOG');
+                    updateStats();
+
+                    // Giả lập gửi dữ liệu (không thực sự gửi)
+                    if (stats.keystrokes % 10 === 0) {
+                        logActivity(`Batch sent: ${stats.keystrokes} keystrokes to malicious-server.com`, 'ATTACK');
+                    }
+                }
+            });
+        }
+
+        // Giả lập đánh cắp dữ liệu form
+        function stealFormData() {
+            formInterceptActive = true;
+            logActivity('Form data interceptor activated', 'ATTACK');
+
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    if (formInterceptActive) {
+                        e.preventDefault();
+
+                        const formData = new FormData(form);
+                        const data = {};
+                        for (let [key, value] of formData.entries()) {
+                            data[key] = value;
+                        }
+
+                        capturedData.push({
+                            type: 'form',
+                            data: data,
+                            timestamp: Date.now(),
+                            url: window.location.href
+                        });
+
+                        stats.forms++;
+                        stats.dataBytes += JSON.stringify(data).length;
+
+                        logActivity(`Form data stolen: ${Object.keys(data).join(', ')}`, 'ATTACK');
+                        logActivity(`Sensitive data sent to attacker-site.com`, 'ATTACK');
+                        updateStats();
+
+                        alert('⚠️ Dữ liệu form đã bị đánh cắp! (Giả lập)');
+                    }
+                });
+            });
+        }
+
+        // Thu thập thông tin trình duyệt
+        function collectBrowserInfo() {
+            const browserInfo = {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                cookieEnabled: navigator.cookieEnabled,
+                onLine: navigator.onLine,
+                screen: `${screen.width}x${screen.height}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                url: window.location.href,
+                referrer: document.referrer,
+                timestamp: Date.now()
+            };
+
+            capturedData.push({
+                type: 'browserInfo',
+                data: browserInfo
+            });
+
+            stats.dataBytes += JSON.stringify(browserInfo).length;
+
+            logActivity('Browser fingerprinting completed', 'ATTACK');
+            logActivity(`Collected: ${Object.keys(browserInfo).length} data points`, 'ATTACK');
+            logActivity('Browser info sent to tracking-server.com', 'ATTACK');
+
+            updateStats();
+        }
+
+        // Biện pháp phòng chống
+        function enableCSP() {
+            logActivity('Content Security Policy enabled', 'DEFENSE');
+            logActivity('Blocked inline scripts and external resources', 'DEFENSE');
+            stats.blocked += 3;
+            updateStats();
+        }
+
+        function blockMaliciousRequests() {
+            logActivity('Malicious request blocker activated', 'DEFENSE');
+            logActivity('Blocked requests to suspicious domains', 'DEFENSE');
+            stats.blocked += 5;
+            updateStats();
+        }
+
+        function sanitizeInputs() {
+            logActivity('Input sanitization enabled', 'DEFENSE');
+            logActivity('XSS protection activated', 'DEFENSE');
+            keyloggerActive = false;
+            formInterceptActive = false;
+            document.getElementById('status').className = 'status safe';
+            document.getElementById('status').textContent = 'Hệ thống được bảo vệ';
+            stats.blocked += 2;
+            updateStats();
+        }
+
+        // Cập nhật thống kê
+        function updateStats() {
+            document.getElementById('keystrokeCount').textContent = stats.keystrokes;
+            document.getElementById('formCount').textContent = stats.forms;
+            document.getElementById('dataCount').textContent = stats.dataBytes;
+            document.getElementById('blockedCount').textContent = stats.blocked;
+        }
+
+        // Xóa logs
+        function clearLogs() {
+            document.getElementById('logArea').innerHTML = `
+                <div>[SYSTEM] Logs cleared</div>
+                <div>[INFO] Security Lab ready for new simulation</div>
+            `;
+            capturedData = [];
+            stats = { keystrokes: 0, forms: 0, dataBytes: 0, blocked: 0 };
+            updateStats();
+        }
+
+        // Form submission handler
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            if (!formInterceptActive) {
+                e.preventDefault();
+                alert('✅ Đăng nhập thành công! (Giả lập - Dữ liệu an toàn)');
+                logActivity('Normal form submission - No data stolen', 'INFO');
+            }
+        });
+
+        // Khởi tạo
+        logActivity('Security Lab initialized successfully', 'SYSTEM');
+        logActivity('Ready for security testing', 'SYSTEM');
+    </script>
+</body>
+
+</html>
