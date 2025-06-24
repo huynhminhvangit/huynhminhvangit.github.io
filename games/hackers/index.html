@@ -27,18 +27,17 @@
             <h1>🛡️ Security Lab</h1>
             <p>Môi trường giả lập tấn công web để học phòng chống</p>
         </div>
-
+        
         <div class="warning">
             <h3>⚠️ CẢNH BÁO QUAN TRỌNG</h3>
-            <p><strong>Đây là môi trường lab giáo dục!</strong> Tất cả dữ liệu được lưu trong bộ nhớ tạm và sẽ mất khi
-                refresh trang. Không nhập thông tin thật!</p>
+            <p><strong>Đây là môi trường lab giáo dục!</strong> Tất cả dữ liệu được lưu trong bộ nhớ tạm và sẽ mất khi refresh trang. Không nhập thông tin thật!</p>
             <ul style="margin-top: 10px; margin-left: 20px;">
                 <li>Chỉ sử dụng cho mục đích học tập</li>
                 <li>Không áp dụng kiến thức này để tấn công hệ thống thật</li>
                 <li>Luôn sử dụng dữ liệu giả khi test</li>
             </ul>
         </div>
-
+        
         <div class="main-content">
             <div class="section">
                 <h3>🎯 Mục tiêu giả lập (Fake Login)</h3>
@@ -58,18 +57,47 @@
                     <button type="submit" class="btn">Đăng nhập</button>
                 </form>
             </div>
-
+            
             <div class="section">
-                <h3>🕵️ Bảng điều khiển tấn công</h3>
+                <h3>🕵️ Bảng điều khiển tấn công - Nhóm 1</h3>
                 <div class="controls">
                     <button class="btn btn-danger" onclick="startKeylogger()">Bật Keylogger</button>
                     <button class="btn btn-danger" onclick="stealFormData()">Đánh cắp Form</button>
                     <button class="btn btn-danger" onclick="collectBrowserInfo()">Thu thập Info</button>
-                    <button class="btn" onclick="clearLogs()">Xóa Log</button>
+                    <button class="btn btn-danger" onclick="sessionHijack()">Session Hijack</button>
                 </div>
                 <div class="status safe" id="status">Hệ thống an toàn</div>
             </div>
-
+            
+            <div class="section">
+                <h3>💀 Tấn công nâng cao - Nhóm 2</h3>
+                <div class="controls">
+                    <button class="btn btn-danger" onclick="clickjacking()">Clickjacking</button>
+                    <button class="btn btn-danger" onclick="xssAttack()">XSS Attack</button>
+                    <button class="btn btn-danger" onclick="csrfAttack()">CSRF Attack</button>
+                    <button class="btn btn-danger" onclick="socialEngineering()">Social Engineering</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🎯 Tấn công chuyên sâu - Nhóm 3</h3>
+                <div class="controls">
+                    <button class="btn btn-danger" onclick="cryptoMining()">Crypto Mining</button>
+                    <button class="btn btn-danger" onclick="dataExfiltration()">Data Exfiltration</button>  
+                    <button class="btn btn-danger" onclick="backdoorInstall()">Install Backdoor</button>
+                    <button class="btn btn-danger" onclick="networkScan()">Network Scan</button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🔧 Công cụ điều khiển</h3>
+                <div class="controls">
+                    <button class="btn" onclick="clearLogs()">Xóa Log</button>
+                    <button class="btn" onclick="exportData()">Export Data</button>
+                    <button class="btn" onclick="resetLab()">Reset Lab</button>
+                </div>
+            </div>
+            
             <div class="section full-width">
                 <h3>📊 Log hoạt động độc hại (Giả lập)</h3>
                 <div class="log-area" id="logArea">
@@ -77,23 +105,58 @@
                     <div>[INFO] Môi trường lab an toàn - Tất cả dữ liệu là giả</div>
                 </div>
             </div>
-
+            
             <div class="section">
-                <h3>🛡️ Biện pháp phòng chống</h3>
+                <h3>🛡️ Biện pháp phòng chống nâng cao</h3>
                 <div class="controls">
                     <button class="btn" onclick="enableCSP()">Bật CSP</button>
                     <button class="btn" onclick="blockMaliciousRequests()">Chặn Request</button>
                     <button class="btn" onclick="sanitizeInputs()">Làm sạch Input</button>
+                    <button class="btn" onclick="enableWAF()">Bật WAF</button>
+                    <button class="btn" onclick="enableMFA()">Bật 2FA</button>
+                    <button class="btn" onclick="enableHoneypot()">Deploy Honeypot</button>
                 </div>
             </div>
-
+            
             <div class="section">
-                <h3>📈 Thống kê tấn công</h3>
+                <h3>📈 Thống kê tấn công chi tiết</h3>
                 <div id="stats">
                     <p>Keystrokes captured: <span id="keystrokeCount">0</span></p>
                     <p>Forms intercepted: <span id="formCount">0</span></p>
                     <p>Data leaked: <span id="dataCount">0</span> bytes</p>
                     <p>Blocked attempts: <span id="blockedCount">0</span></p>
+                    <p>XSS attempts: <span id="xssCount">0</span></p>
+                    <p>Session hijacks: <span id="sessionCount">0</span></p>
+                    <p>Mining threads: <span id="miningCount">0</span></p>
+                    <p>Network probes: <span id="networkCount">0</span></p>
+                </div>
+            </div>
+            
+            <div class="section full-width">
+                <h3>🎯 Fake Banking Interface (Mục tiêu mô phỏng)</h3>
+                <div style="background: #f0f8ff; padding: 20px; border-radius: 8px; border: 2px solid #4169e1;">
+                    <h4>🏦 SecureBank Login</h4>
+                    <form id="bankingForm">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                            <div class="form-group">
+                                <label>Account Number:</label>
+                                <input type="text" id="accountNumber" placeholder="123456789" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label>PIN:</label>
+                                <input type="password" id="pin" placeholder="****" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label>Credit Card:</label>
+                                <input type="text" id="creditCardFull" placeholder="4532-1234-5678-9012" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label>CVV:</label>
+                                <input type="password" id="cvv" placeholder="123" autocomplete="off">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn" style="margin-top: 15px;">Login to Bank</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -103,12 +166,19 @@
         // Biến toàn cục để theo dõi
         let keyloggerActive = false;
         let formInterceptActive = false;
+        let xssActive = false;
+        let miningActive = false;
+        let backdoorActive = false;
         let capturedData = [];
         let stats = {
             keystrokes: 0,
             forms: 0,
             dataBytes: 0,
-            blocked: 0
+            blocked: 0,
+            xss: 0,
+            sessions: 0,
+            mining: 0,
+            network: 0
         };
 
         // Hàm log an toàn
@@ -126,14 +196,14 @@
                 logActivity('Keylogger đã đang hoạt động', 'WARNING');
                 return;
             }
-
+            
             keyloggerActive = true;
             document.getElementById('status').className = 'status danger';
             document.getElementById('status').textContent = 'CẢNH BÁO: Keylogger đang hoạt động!';
-
+            
             logActivity('Keylogger đã được kích hoạt', 'ATTACK');
-
-            document.addEventListener('keydown', function (e) {
+            
+            document.addEventListener('keydown', function(e) {
                 if (keyloggerActive) {
                     const keyData = {
                         key: e.key,
@@ -141,14 +211,14 @@
                         target: e.target.tagName,
                         targetId: e.target.id || 'unknown'
                     };
-
+                    
                     capturedData.push(keyData);
                     stats.keystrokes++;
                     stats.dataBytes += JSON.stringify(keyData).length;
-
+                    
                     logActivity(`Key captured: ${e.key} on ${e.target.tagName}#${e.target.id}`, 'KEYLOG');
                     updateStats();
-
+                    
                     // Giả lập gửi dữ liệu (không thực sự gửi)
                     if (stats.keystrokes % 10 === 0) {
                         logActivity(`Batch sent: ${stats.keystrokes} keystrokes to malicious-server.com`, 'ATTACK');
@@ -161,33 +231,33 @@
         function stealFormData() {
             formInterceptActive = true;
             logActivity('Form data interceptor activated', 'ATTACK');
-
+            
             const forms = document.querySelectorAll('form');
             forms.forEach(form => {
-                form.addEventListener('submit', function (e) {
+                form.addEventListener('submit', function(e) {
                     if (formInterceptActive) {
                         e.preventDefault();
-
+                        
                         const formData = new FormData(form);
                         const data = {};
                         for (let [key, value] of formData.entries()) {
                             data[key] = value;
                         }
-
+                        
                         capturedData.push({
                             type: 'form',
                             data: data,
                             timestamp: Date.now(),
                             url: window.location.href
                         });
-
+                        
                         stats.forms++;
                         stats.dataBytes += JSON.stringify(data).length;
-
+                        
                         logActivity(`Form data stolen: ${Object.keys(data).join(', ')}`, 'ATTACK');
                         logActivity(`Sensitive data sent to attacker-site.com`, 'ATTACK');
                         updateStats();
-
+                        
                         alert('⚠️ Dữ liệu form đã bị đánh cắp! (Giả lập)');
                     }
                 });
@@ -208,22 +278,417 @@
                 referrer: document.referrer,
                 timestamp: Date.now()
             };
-
+            
             capturedData.push({
                 type: 'browserInfo',
                 data: browserInfo
             });
-
+            
             stats.dataBytes += JSON.stringify(browserInfo).length;
-
+            
             logActivity('Browser fingerprinting completed', 'ATTACK');
             logActivity(`Collected: ${Object.keys(browserInfo).length} data points`, 'ATTACK');
             logActivity('Browser info sent to tracking-server.com', 'ATTACK');
-
+            
             updateStats();
         }
 
-        // Biện pháp phòng chống
+        // Session Hijacking
+        function sessionHijack() {
+            const fakeSessionData = {
+                sessionId: 'sess_' + Math.random().toString(36).substr(2, 9),
+                userId: 'user_' + Math.floor(Math.random() * 1000),
+                authToken: 'token_' + Math.random().toString(36).substr(2, 16),
+                userAgent: navigator.userAgent,
+                ipAddress: '192.168.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255),
+                timestamp: Date.now()
+            };
+            
+            capturedData.push({
+                type: 'sessionHijack',
+                data: fakeSessionData
+            });
+            
+            stats.sessions++;
+            stats.dataBytes += JSON.stringify(fakeSessionData).length;
+            
+            logActivity('Session hijacking successful', 'ATTACK');
+            logActivity(`Stolen session: ${fakeSessionData.sessionId}`, 'ATTACK');
+            logActivity('Session data sent to command & control server', 'ATTACK');
+            updateStats();
+        }
+
+        // XSS Attack
+        function xssAttack() {
+            if (xssActive) {
+                logActivity('XSS payload already active', 'WARNING');
+                return;
+            }
+            
+            xssActive = true;
+            stats.xss++;
+            
+            // Tạo popup giả mạo
+            const maliciousDiv = document.createElement('div');
+            maliciousDiv.id = 'xssPayload';
+            maliciousDiv.innerHTML = `
+                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                           background: white; border: 3px solid red; padding: 20px; z-index: 9999;
+                           box-shadow: 0 0 20px rgba(0,0,0,0.5);">
+                    <h3 style="color: red;">🚨 SECURITY ALERT</h3>
+                    <p>Your session has expired. Please re-enter your password:</p>
+                    <input type="password" id="xssInput" placeholder="Enter password" style="width: 100%; padding: 8px; margin: 10px 0;">
+                    <button onclick="stealXSSData()" style="background: red; color: white; padding: 8px 15px; border: none; cursor: pointer;">Verify</button>
+                    <button onclick="closeXSS()" style="background: gray; color: white; padding: 8px 15px; border: none; cursor: pointer; margin-left: 10px;">Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(maliciousDiv);
+            
+            logActivity('XSS payload injected successfully', 'ATTACK');
+            logActivity('Fake security alert displayed to user', 'ATTACK');
+            updateStats();
+        }
+
+        // Clickjacking
+        function clickjacking() {
+            const overlay = document.createElement('div');
+            overlay.id = 'clickjackOverlay';
+            overlay.innerHTML = `
+                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                           background: rgba(0,0,0,0.1); z-index: 1000; cursor: pointer;"
+                     onclick="handleClickjack(event)">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                               background: yellow; padding: 20px; border: 2px solid orange;">
+                        <h3>🎁 Congratulations!</h3>
+                        <p>You've won a prize! Click anywhere to claim it!</p>
+                        <small style="color: red;">(Đây là clickjacking giả mạo)</small>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            
+            logActivity('Clickjacking overlay deployed', 'ATTACK');
+            logActivity('Invisible layer created to steal clicks', 'ATTACK');
+            
+            setTimeout(() => {
+                const element = document.getElementById('clickjackOverlay');
+                if (element) element.remove();
+            }, 5000);
+        }
+
+        // CSRF Attack
+        function csrfAttack() {
+            const csrfData = {
+                targetUrl: 'https://victim-bank.com/transfer',
+                method: 'POST',
+                params: {
+                    to_account: '999999999',
+                    amount: '1000000',
+                    memo: 'Emergency transfer'
+                },
+                referer: window.location.href,
+                timestamp: Date.now()
+            };
+            
+            capturedData.push({
+                type: 'csrf',
+                data: csrfData
+            });
+            
+            stats.dataBytes += JSON.stringify(csrfData).length;
+            
+            logActivity('CSRF attack initiated', 'ATTACK');
+            logActivity('Forged request prepared for bank transfer', 'ATTACK');
+            logActivity('Request would be sent using victim credentials', 'ATTACK');
+            updateStats();
+        }
+
+        // Social Engineering
+        function socialEngineering() {
+            const techniques = [
+                'Phishing email sent mimicking bank security team',
+                'Fake tech support call scheduled',
+                'Urgent security update notification prepared',
+                'Fake prize notification created',
+                'CEO impersonation email drafted'
+            ];
+            
+            const selectedTechnique = techniques[Math.floor(Math.random() * techniques.length)];
+            
+            logActivity('Social engineering campaign launched', 'ATTACK');
+            logActivity(`Technique: ${selectedTechnique}`, 'ATTACK');
+            logActivity('Psychological manipulation in progress', 'ATTACK');
+            
+            // Hiển thị popup giả
+            alert(`📧 PHISHING EMAIL:\n\n"Dear Customer,\n\nWe detected suspicious activity on your account. Please verify your identity immediately by clicking the link below:\n\nhttps://secure-bank-verification.fake.com\n\nFailure to verify within 24 hours will result in account suspension.\n\nBest regards,\nSecurity Team"\n\n⚠️ (Đây là email lừa đảo giả mạo!)`);
+        }
+
+        // Crypto Mining
+        function cryptoMining() {
+            if (miningActive) {
+                logActivity('Crypto mining already running', 'WARNING');
+                return;
+            }
+            
+            miningActive = true;
+            stats.mining++;
+            
+            logActivity('Crypto mining script injected', 'ATTACK');
+            logActivity('Using victim CPU for cryptocurrency mining', 'ATTACK');
+            
+            // Giả lập tăng CPU usage
+            let miningThreads = 0;
+            const miningInterval = setInterval(() => {
+                if (miningActive && miningThreads < 10) {
+                    miningThreads++;
+                    logActivity(`Mining thread ${miningThreads} started - CPU usage: ${miningThreads * 10}%`, 'MINING');
+                    
+                    if (miningThreads >= 10) {
+                        logActivity('Maximum mining capacity reached - Victim device slowdown', 'ATTACK');
+                        clearInterval(miningInterval);
+                    }
+                }
+            }, 1000);
+            
+            updateStats();
+        }
+
+        // Data Exfiltration
+        function dataExfiltration() {
+            const sensitiveData = {
+                passwords: ['password123', 'admin2024', 'mySecret!'],
+                emails: ['user@email.com', 'admin@company.com'],
+                creditCards: ['4532-****-****-9012', '5555-****-****-4444'],
+                documents: ['contract.pdf', 'financial_report.xlsx', 'personal_data.doc'],
+                browserHistory: [
+                    'https://banking.site.com',
+                    'https://work.company.com',
+                    'https://personal.email.com'
+                ],
+                fileSize: Math.floor(Math.random() * 1000000) + 100000
+            };
+            
+            capturedData.push({
+                type: 'dataExfiltration',
+                data: sensitiveData,
+                timestamp: Date.now()
+            });
+            
+            stats.dataBytes += sensitiveData.fileSize;
+            
+            logActivity('Data exfiltration initiated', 'ATTACK');
+            logActivity(`Collected ${sensitiveData.passwords.length} passwords`, 'ATTACK');
+            logActivity(`Collected ${sensitiveData.creditCards.length} credit cards`, 'ATTACK');
+            logActivity(`Exfiltrating ${Math.floor(sensitiveData.fileSize/1024)}KB of data`, 'ATTACK');
+            logActivity('Data compressed and encrypted for transmission', 'ATTACK');
+            
+            updateStats();
+        }
+
+        // Backdoor Installation
+        function backdoorInstall() {
+            if (backdoorActive) {
+                logActivity('Backdoor already installed', 'WARNING');
+                return;
+            }
+            
+            backdoorActive = true;
+            
+            const backdoorConfig = {
+                type: 'persistent_backdoor',
+                port: 4444,
+                encryption: 'AES-256',
+                persistence: 'registry_key',
+                command_server: 'backdoor.malicious.com',
+                installed_time: Date.now(),
+                capabilities: [
+                    'remote_command_execution',
+                    'file_system_access',
+                    'keylogger',
+                    'screenshot_capture',
+                    'webcam_access'
+                ]
+            };
+            
+            capturedData.push({
+                type: 'backdoor',
+                data: backdoorConfig
+            });
+            
+            logActivity('Backdoor installation successful', 'ATTACK');
+            logActivity(`Listening on port ${backdoorConfig.port}`, 'ATTACK');
+            logActivity('Persistence mechanism established', 'ATTACK');
+            logActivity('Connected to command & control server', 'ATTACK');
+            logActivity('System compromised - Full remote access granted', 'ATTACK');
+            
+            updateStats();
+        }
+
+        // Network Scanning
+        function networkScan() {
+            stats.network++;
+            
+            const networkData = {
+                local_ip: '192.168.1.' + Math.floor(Math.random() * 254 + 1),
+                subnet: '192.168.1.0/24',
+                open_ports: [22, 80, 443, 3306, 5432],
+                discovered_hosts: [],
+                services: {
+                    'SSH': '192.168.1.10:22',
+                    'HTTP': '192.168.1.1:80', 
+                    'MySQL': '192.168.1.15:3306',
+                    'PostgreSQL': '192.168.1.20:5432'
+                }
+            };
+            
+            // Giả lập quét mạng
+            logActivity('Network reconnaissance initiated', 'ATTACK');
+            logActivity(`Scanning subnet: ${networkData.subnet}`, 'ATTACK');
+            
+            for (let i = 1; i <= 10; i++) {
+                setTimeout(() => {
+                    const host = `192.168.1.${Math.floor(Math.random() * 254 + 1)}`;
+                    networkData.discovered_hosts.push(host);
+                    logActivity(`Host discovered: ${host} - Ports: ${networkData.open_ports.join(', ')}`, 'SCAN');
+                }, i * 500);
+            }
+            
+            setTimeout(() => {
+                logActivity('Network scan completed', 'ATTACK');
+                logActivity(`${networkData.discovered_hosts.length} vulnerable hosts identified`, 'ATTACK');
+                capturedData.push({
+                    type: 'networkScan',
+                    data: networkData
+                });
+            }, 5500);
+            
+            updateStats();
+        }
+
+        // Hàm hỗ trợ cho XSS
+        function stealXSSData() {
+            const password = document.getElementById('xssInput').value;
+            if (password) {
+                logActivity(`XSS - Password stolen: ${password}`, 'ATTACK');
+                capturedData.push({
+                    type: 'xss_steal',
+                    data: { password: password, timestamp: Date.now() }
+                });
+                stats.dataBytes += password.length;
+                updateStats();
+            }
+            closeXSS();
+        }
+
+        function closeXSS() {
+            const element = document.getElementById('xssPayload');
+            if (element) element.remove();
+            xssActive = false;
+        }
+
+        function handleClickjack(event) {
+            logActivity('Clickjacking successful - User clicked on hidden element', 'ATTACK');
+            logActivity('Unauthorized action executed', 'ATTACK');
+            document.getElementById('clickjackOverlay').remove();
+        }
+
+        // Biện pháp phòng chống nâng cao
+        function enableWAF() {
+            logActivity('Web Application Firewall enabled', 'DEFENSE');
+            logActivity('SQL Injection protection activated', 'DEFENSE');
+            logActivity('XSS filtering enabled', 'DEFENSE');
+            stats.blocked += 8;
+            updateStats();
+        }
+
+        function enableMFA() {
+            logActivity('Multi-Factor Authentication enabled', 'DEFENSE');
+            logActivity('SMS verification required for login', 'DEFENSE');
+            logActivity('Authentication bypass attempts blocked', 'DEFENSE');
+            stats.blocked += 5;
+            updateStats();
+        }
+
+        function enableHoneypot() {
+            logActivity('Honeypot deployed successfully', 'DEFENSE');
+            logActivity('Fake vulnerable services created', 'DEFENSE');
+            logActivity('Attacker monitoring system active', 'DEFENSE');
+            stats.blocked += 3;
+            updateStats();
+        }
+
+        // Export data
+        function exportData() {
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                stats: stats,
+                capturedData: capturedData,
+                summary: {
+                    totalAttacks: stats.keystrokes + stats.forms + stats.xss + stats.sessions + stats.mining + stats.network,
+                    totalDataLeaked: stats.dataBytes,
+                    totalBlocked: stats.blocked
+                }
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `security_lab_report_${Date.now()}.json`;
+            a.click();
+            
+            logActivity('Security report exported successfully', 'SYSTEM');
+        }
+
+        // Reset lab
+        function resetLab() {
+            keyloggerActive = false;
+            formInterceptActive = false;
+            xssActive = false;
+            miningActive = false;
+            backdoorActive = false;
+            capturedData = [];
+            stats = {
+                keystrokes: 0,
+                forms: 0,
+                dataBytes: 0,
+                blocked: 0,
+                xss: 0,
+                sessions: 0,
+                mining: 0,
+                network: 0
+            };
+            
+            document.getElementById('status').className = 'status safe';
+            document.getElementById('status').textContent = 'Hệ thống an toàn';
+            
+            // Remove any remaining XSS elements
+            const xssElement = document.getElementById('xssPayload');
+            if (xssElement) xssElement.remove();
+            
+            const clickjackElement = document.getElementById('clickjackOverlay');
+            if (clickjackElement) clickjackElement.remove();
+            
+            updateStats();
+            clearLogs();
+            logActivity('Security Lab reset completed', 'SYSTEM');
+        }
+
+        // Cập nhật thống kê
+        function updateStats() {
+            document.getElementById('keystrokeCount').textContent = stats.keystrokes;
+            document.getElementById('formCount').textContent = stats.forms;
+            document.getElementById('dataCount').textContent = stats.dataBytes;
+            document.getElementById('blockedCount').textContent = stats.blocked;
+            document.getElementById('xssCount').textContent = stats.xss;
+            document.getElementById('sessionCount').textContent = stats.sessions;
+            document.getElementById('miningCount').textContent = stats.mining;
+            document.getElementById('networkCount').textContent = stats.network;
+        }
+
+        // Biện pháp phòng chống cơ bản
         function enableCSP() {
             logActivity('Content Security Policy enabled', 'DEFENSE');
             logActivity('Blocked inline scripts and external resources', 'DEFENSE');
@@ -243,18 +708,11 @@
             logActivity('XSS protection activated', 'DEFENSE');
             keyloggerActive = false;
             formInterceptActive = false;
+            xssActive = false;
             document.getElementById('status').className = 'status safe';
             document.getElementById('status').textContent = 'Hệ thống được bảo vệ';
             stats.blocked += 2;
             updateStats();
-        }
-
-        // Cập nhật thống kê
-        function updateStats() {
-            document.getElementById('keystrokeCount').textContent = stats.keystrokes;
-            document.getElementById('formCount').textContent = stats.forms;
-            document.getElementById('dataCount').textContent = stats.dataBytes;
-            document.getElementById('blockedCount').textContent = stats.blocked;
         }
 
         // Xóa logs
@@ -269,7 +727,7 @@
         }
 
         // Form submission handler
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             if (!formInterceptActive) {
                 e.preventDefault();
                 alert('✅ Đăng nhập thành công! (Giả lập - Dữ liệu an toàn)');
@@ -282,5 +740,4 @@
         logActivity('Ready for security testing', 'SYSTEM');
     </script>
 </body>
-
 </html>
