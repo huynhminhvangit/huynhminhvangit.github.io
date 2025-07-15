@@ -103,3 +103,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# __pycache__
+__pycache__/
