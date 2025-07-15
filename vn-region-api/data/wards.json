@@ -1,0 +1,32 @@
+[
+  {
+    "code": "00001",
+    "name": "Phường Phúc Xá",
+    "district_code": "001",
+    "province_code": "01"
+  },
+  {
+    "code": "00004",
+    "name": "Phường Trúc Bạch",
+    "district_code": "001",
+    "province_code": "01"
+  },
+  {
+    "code": "00006",
+    "name": "Phường Vĩnh Phúc",
+    "district_code": "001",
+    "province_code": "01"
+  },
+  {
+    "code": "00007",
+    "name": "Phường Cống Vị",
+    "district_code": "001",
+    "province_code": "01"
+  },
+  {
+    "code": "00008",
+    "name": "Phường Liễu Giai",
+    "district_code": "001",
+    "province_code": "01"
+  }
+]

@@ -1,0 +1,77 @@
+[
+  {
+    "code": "01",
+    "name": "Thành phố Hà Nội",
+    "type": "Thành phố Trung ương"
+  },
+  {
+    "code": "79",
+    "name": "Thành phố Hồ Chí Minh",
+    "type": "Thành phố Trung ương"
+  },
+  {
+    "code": "48",
+    "name": "Thành phố Đà Nẵng",
+    "type": "Thành phố Trung ương"
+  },
+  {
+    "code": "92",
+    "name": "Thành phố Cần Thơ",
+    "type": "Thành phố Trung ương"
+  },
+  {
+    "code": "31",
+    "name": "Thành phố Hải Phòng",
+    "type": "Thành phố Trung ương"
+  },
+  {
+    "code": "02",
+    "name": "Tỉnh Hà Giang",
+    "type": "Tỉnh"
+  },
+  {
+    "code": "04",
+    "name": "Tỉnh Cao Bằng",
+    "type": "Tỉnh"
+  },
+  {
+    "code": "06",
+    "name": "Tỉnh Bắc Kạn",
+    "type": "Tỉnh"
+  },
+  {
+    "code": "08",
+    "name": "Tỉnh Tuyên Quang",
+    "type": "Tỉnh"
+  },
+  {
+    "code": "10",
+    "name": "Tỉnh Lào Cai",
+    "type": "Tỉnh"
+  },
+  {
+    "code": "11",
+    "name": "Tỉnh Điện Biên",
+    "type": "Tỉnh"
+  },
+  {
+    "code": "12",
+    "name": "Tỉnh Lai Châu",
+    "type": "Tỉnh"
+  },
+  {
+    "code": "14",
+    "name": "Tỉnh Sơn La",
+    "type": "Tỉnh"
+  },
+  {
+    "code": "15",
+    "name": "Tỉnh Yên Bái",
+    "type": "Tỉnh"
+  },
+  {
+    "code": "17",
+    "name": "Tỉnh Hoà Bình",
+    "type": "Tỉnh"
+  }
+]
